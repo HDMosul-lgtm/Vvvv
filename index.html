@@ -774,7 +774,6 @@
 
         function isPhoneNumber(query) {
             const cleaned = query.replace(/[^0-9]/g, '');
-            // إذا كان الطول 7 أرقام أو أكثر وأغلب الأحرف أرقام
             return cleaned.length >= 7 && (cleaned.length / query.length) > 0.7;
         }
 
@@ -895,8 +894,9 @@
                     data = generateFakePhoneData(query);
                     storeData(query, data);
                 }
-                // نستخدم الرقم كما هو تماماً
-                displayPhoneResults(data, query);
+                // نستخدم الرقم كما هو للروابط، مع إزالة المسافات والرموز غير الرقمية عدا +
+                const rawPhone = query.replace(/\s/g, '');
+                displayPhoneResults(data, rawPhone);
                 resultsEl.classList.add('active');
                 resetBtn.style.display = 'block';
                 searchBtn.disabled = false;
@@ -922,9 +922,10 @@
 
         function displayPhoneResults(data, rawPhone) {
             const resultsEl = document.getElementById('results');
-            // استخدام الرقم كما هو لإزالة + أو غيره لتناسب الرابط
-            const cleanForUrl = rawPhone.replace(/[^0-9+]/g, ''); // نحتفظ بـ + إن وجدت
-            const truecallerUrl = `https://www.truecaller.com/search/${cleanForUrl}`;
+            // نحضر الرقم المنظف للروابط: نحذف أي شيء غير رقمي ما عدا علامة +
+            const cleanForUrl = rawPhone.replace(/[^0-9+]/g, '');
+            // رابط Truecaller صحيح: لا نضيف دولة، فقط نضع الرقم كما هو (بدون + لبعض الروابط يمكن أن تبقى)
+            const truecallerUrl = `https://www.truecaller.com/search/${encodeURIComponent(cleanForUrl)}`;
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
 
             let html = `
