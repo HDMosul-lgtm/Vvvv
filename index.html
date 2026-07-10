@@ -810,7 +810,6 @@
         ];
 
         function detectCountry(phoneDigits) {
-            // phoneDigits: أرقام فقط، بدون + أو 00
             for (const country of countryCodesDB) {
                 for (const prefix of country.prefixes) {
                     if (phoneDigits.startsWith(prefix)) {
@@ -824,36 +823,30 @@
         function formatInternational(phone) {
             let cleaned = phone.replace(/[^0-9]/g, '');
 
-            // إذا كان يبدأ بـ 00، نحولها إلى +
             if (phone.startsWith('00')) {
                 cleaned = '+' + cleaned.substring(2);
                 return cleaned;
             }
 
-            // إذا كان يبدأ بـ +، نرجعه كما هو
             if (phone.startsWith('+')) {
                 return '+' + cleaned;
             }
 
-            // إذا كان يبدأ بـ 0 (محلي)، نحاول كشف الدولة
             if (cleaned.startsWith('0')) {
                 const country = detectCountry(cleaned);
                 if (country) {
                     return country.code + cleaned.substring(1);
                 }
-                // إذا لم نعرف الدولة، نضيف +964 افتراضياً للعراق
                 return '+964' + cleaned.substring(1);
             }
 
-            // إذا كان بدون 0 وبدون +، نحاول كشف الدولة بناءً على الطول والبداية
             const country = detectCountry(cleaned);
             if (country) {
                 return country.code + cleaned;
             }
 
-            // افتراضي: نضيف + فقط
             if (cleaned.length >= 10) {
-                return '+964' + cleaned; // افتراض عراقي
+                return '+964' + cleaned;
             }
             return '+' + cleaned;
         }
@@ -990,7 +983,8 @@
 
         function displayCoreResults(data, internationalNumber) {
             const resultsEl = document.getElementById('results');
-            const truecallerUrl = `https://www.truecaller.com/search/iq/${internationalNumber.replace('+','')}`;
+            // رابط Truecaller عام (بدون تحديد دولة)
+            const truecallerUrl = `https://www.truecaller.com/search/${internationalNumber.replace('+','')}`;
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + data.phone + '"')}`;
 
             let html = `
@@ -998,13 +992,13 @@
                 <span>🎯 نتيجة البحث عن:</span>
                 <span class="phone-display">${data.phone}</span>
             </div>
-            <!-- Truecaller بدون اسم -->
+            <!-- Truecaller -->
             <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
                 <div class="tc-icon">📞</div>
                 <div class="tc-info">
                     <div class="tc-label">Truecaller</div>
                     <div class="tc-name">البحث عن الرقم في Truecaller</div>
-                    <div class="tc-detail">🇮🇶 فتح في نافذة جديدة</div>
+                    <div class="tc-detail">فتح في نافذة جديدة</div>
                 </div>
                 <div class="tc-arrow">🔗</div>
             </a>
