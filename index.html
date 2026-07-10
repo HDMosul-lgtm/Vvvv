@@ -15,6 +15,7 @@
             --gold: #ffb300;
             --accent: #d50000;
             --glow: #ff0000;
+            --truecaller-blue: #1a73e8;
         }
 
         * {
@@ -330,6 +331,67 @@
             direction: ltr;
             display: block;
         }
+        .truecaller-card {
+            background: #0d1b2a;
+            border: 1px solid #1b3a5c;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #c0d8f0;
+            font-family: 'Courier New', 'Cairo', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        .truecaller-card:hover {
+            background: #12253b;
+            border-color: #2a5a9c;
+            box-shadow: 0 0 25px rgba(26, 115, 232, 0.35);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .truecaller-card .tc-icon {
+            font-size: 26px;
+            background: #1a73e8;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .truecaller-card .tc-info {
+            flex: 1;
+        }
+        .truecaller-card .tc-label {
+            font-size: 11px;
+            color: #6a9fd8;
+            letter-spacing: 1px;
+        }
+        .truecaller-card .tc-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 1px;
+        }
+        .truecaller-card .tc-detail {
+            font-size: 11px;
+            color: #6a9fd8;
+            margin-top: 2px;
+        }
+        .truecaller-card .tc-arrow {
+            font-size: 18px;
+            opacity: 0.7;
+            margin-right: auto;
+        }
+
         .app-card {
             background: #111;
             border: 1px solid #1f1f1f;
@@ -349,7 +411,6 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
             background: #151515;
         }
-        /* بطاقات واتساب وتيليجرام قابلة للنقر */
         .app-card.clickable {
             cursor: pointer;
             border-left: 3px solid #ff0000;
@@ -536,6 +597,9 @@
                 height: 38px;
                 font-size: 18px;
             }
+            .truecaller-card .tc-name {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -600,16 +664,29 @@
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        // تحويل الرقم إلى صيغة دولية عراقية (افتراضي)
         function formatInternational(phone) {
             let cleaned = phone.replace(/[^0-9]/g, '');
-            // إذا بدأ بـ 0، نحوله إلى +964
             if (cleaned.startsWith('0')) {
                 cleaned = '+964' + cleaned.substring(1);
             } else if (!cleaned.startsWith('+')) {
                 cleaned = '+' + cleaned;
             }
             return cleaned;
+        }
+
+        const firstNames = [
+            'علي', 'محمد', 'أحمد', 'حسين', 'مصطفى', 'حسن', 'عباس', 'كرار', 'زيد', 'يوسف',
+            'عمر', 'سجاد', 'نور', 'آمنة', 'فاطمة', 'زينب', 'سارة', 'مريم', 'دعاء', 'رنا'
+        ];
+        const lastNames = [
+            'الجابري', 'الحسني', 'الكاظمي', 'الموسوي', 'العبيدي', 'الشمري', 'الدليمي', 'الربيعي',
+            'الخزرجي', 'الأسدي', 'التميمي', 'الجنابي', 'العاني', 'النعيمي', 'الجبوري'
+        ];
+
+        function generateRealName(seed) {
+            const first = firstNames[seed % firstNames.length];
+            const last = lastNames[(seed * 7) % lastNames.length];
+            return first + ' ' + last;
         }
 
         function generateFakeData(phone) {
@@ -641,12 +718,11 @@
             const count = 5 + (seed % 4);
             const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
 
-            // تأكد من وجود واتساب وتيليجرام غالباً
             if (!selectedApps.find(a => a.name === 'واتساب')) {
-                selectedApps.unshift(appsList[0]); // واتساب
+                selectedApps.unshift(appsList[0]);
             }
             if (!selectedApps.find(a => a.name === 'تيليجرام') && seed % 2 === 0) {
-                selectedApps.splice(1, 0, appsList[1]); // تيليجرام
+                selectedApps.splice(1, 0, appsList[1]);
             }
 
             const fakeNames = [
@@ -655,12 +731,14 @@
                 'silent_voice', 'zero_trace', 'masked_figure', 'void_walker'
             ];
             const nameIndex = seed % fakeNames.length;
+            const realName = generateRealName(seed);
 
             return {
                 phone: phone,
                 cleanPhone: clean,
                 apps: selectedApps,
                 fakeName: fakeNames[nameIndex],
+                realName: realName,
                 generatedAt: new Date().toISOString(),
                 seed: seed,
             };
@@ -706,6 +784,7 @@
             searchBtn.textContent = '⏳ جاري البحث...';
             consoleEl.classList.add('active');
 
+            // مرحلة البحث الأولى (الأخطاء المعهودة)
             const logLines = [
                 { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
                 { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
@@ -751,26 +830,22 @@
                 storeData(phone, data);
             }
 
-            await sleep(300);
-            displayResults(data);
+            // عرض النتائج الأساسية (الرأس و truecaller)
+            displayInitialResults(data);
             resultsEl.classList.add('active');
             resetBtn.style.display = 'block';
             searchBtn.disabled = false;
             searchBtn.textContent = '🔍 بدء البحث';
             isSearching = false;
 
-            const finalLine = document.createElement('div');
-            finalLine.classList.add('line', 'success');
-            finalLine.textContent = '[✓] تم العثور على ' + data.apps.length + ' تطبيق مرتبط بهذا الرقم.';
-            consoleEl.appendChild(finalLine);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
+            // الآن نضيف التطبيقات تدريجياً مع أخطاء إضافية
+            await revealAppsProgressively(data, consoleEl);
         }
 
-        function displayResults(data) {
+        function displayInitialResults(data) {
             const resultsEl = document.getElementById('results');
-            const riskLabels = { high: 'خطر عالي', medium: 'خطر متوسط', low: 'خطر منخفض' };
-            const riskClasses = { high: 'risk-high', medium: 'risk-medium', low: 'risk-low' };
             const internationalNumber = formatInternational(data.phone);
+            const truecallerUrl = `https://www.truecaller.com/search/iq/${internationalNumber.replace('+','')}`;
 
             let html = `
             <div class="result-header">
@@ -778,9 +853,56 @@
                 <span class="phone-display">${data.phone}</span>
                 <span style="font-size:12px;color:#888;">الاسم المستعار: ${data.fakeName}</span>
             </div>
+            <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
+                <div class="tc-icon">👤</div>
+                <div class="tc-info">
+                    <div class="tc-label">Truecaller • الاسم الحقيقي</div>
+                    <div class="tc-name">${data.realName}</div>
+                    <div class="tc-detail">🇮🇶 العراق • محدث ${new Date(data.generatedAt).toLocaleDateString('ar-IQ')}</div>
+                </div>
+                <div class="tc-arrow">🔗</div>
+            </a>
+            <div id="appsContainer"></div>
+            <div style="text-align:center;margin-top:15px;color:#555;font-size:11px;letter-spacing:1px;">
+                🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
+            </div>
           `;
+            resultsEl.innerHTML = html;
+        }
 
-            data.apps.forEach((app, index) => {
+        async function revealAppsProgressively(data, consoleEl) {
+            const appsContainer = document.getElementById('appsContainer');
+            const riskLabels = { high: 'خطر عالي', medium: 'خطر متوسط', low: 'خطر منخفض' };
+            const riskClasses = { high: 'risk-high', medium: 'risk-medium', low: 'risk-low' };
+            const internationalNumber = formatInternational(data.phone);
+
+            // بعض التطبيقات قد "تفشل" في الظهور لإضافة واقعية
+            const appsToShow = data.apps.filter((app, index) => {
+                // نجعل بعض التطبيقات لا تظهر (نسبة فشل)
+                if (app.name === 'تمبلر' || app.name === 'ريديت') return false; // اختفاء متعمد
+                // احتمالية 30% لعدم ظهور تطبيق عشوائي آخر ما عدا واتساب وتيليجرام
+                if (app.name !== 'واتساب' && app.name !== 'تيليجرام' && Math.random() < 0.3) return false;
+                return true;
+            });
+
+            for (let i = 0; i < appsToShow.length; i++) {
+                const app = appsToShow[i];
+                // أضف رسائل خطأ/تحذير في الكونسول قبل كل بطاقة
+                const preLogs = [
+                    { text: `[~] جلب بيانات ${app.name}...`, type: 'processing' },
+                    { text: `[×] خطأ: تعذر الاتصال بخادم ${app.name} — إعادة المحاولة...`, type: 'error' },
+                    { text: `[!] تحذير: بيانات ${app.name} مشفرة جزئياً`, type: 'warning' },
+                ];
+                for (const log of preLogs) {
+                    await sleep(400 + Math.random() * 300);
+                    const lineDiv = document.createElement('div');
+                    lineDiv.classList.add('line', log.type);
+                    lineDiv.textContent = log.text;
+                    consoleEl.appendChild(lineDiv);
+                    consoleEl.scrollTop = consoleEl.scrollHeight;
+                }
+
+                // إنشاء بطاقة التطبيق
                 const statusClass = app.status ? 'status-active' : 'status-inactive';
                 const statusText = app.status ? 'نشط' : 'غير نشط';
                 let clickableClass = '';
@@ -792,36 +914,38 @@
                     if (app.linkType === 'whatsapp') {
                         link = `https://wa.me/${internationalNumber.replace('+', '')}`;
                     } else if (app.linkType === 'telegram') {
-                        // رابط عميق للتلغرام
                         link = `tg://resolve?phone=${internationalNumber}`;
-                        // fallback: رابط ويب
-                        // link = `https://t.me/${internationalNumber}`;
                     }
                     onclickAttr = `onclick="window.open('${link}', '_blank')"`;
                 }
 
-                html += `
-              <div class="app-card ${clickableClass}" style="animation: fadeInUp 0.4s ease ${index * 0.08}s both;" ${onclickAttr}>
-                <div class="app-icon" style="background:${app.color}22; color:${app.color};">
-                  ${app.icon}
-                </div>
-                <div class="app-info">
-                  <div class="app-name">${app.name}</div>
-                  <div class="app-detail">@${data.fakeName}_${app.name.toLowerCase().replace(/[^a-z]/g,'')}</div>
-                </div>
-                <div class="status-dot ${statusClass}" title="${statusText}"></div>
-                <div class="risk-badge ${riskClasses[app.risk]}">${riskLabels[app.risk]}</div>
-              </div>
-            `;
-            });
+                const card = document.createElement('div');
+                card.className = `app-card ${clickableClass}`;
+                card.style.animation = `fadeInUp 0.4s ease ${i * 0.08}s both`;
+                if (onclickAttr) card.setAttribute('onclick', onclickAttr.replace('onclick="', '').replace('"', ''));
+                card.innerHTML = `
+                    <div class="app-icon" style="background:${app.color}22; color:${app.color};">
+                      ${app.icon}
+                    </div>
+                    <div class="app-info">
+                      <div class="app-name">${app.name}</div>
+                      <div class="app-detail">@${data.fakeName}_${app.name.toLowerCase().replace(/[^a-z]/g,'')}</div>
+                    </div>
+                    <div class="status-dot ${statusClass}" title="${statusText}"></div>
+                    <div class="risk-badge ${riskClasses[app.risk]}">${riskLabels[app.risk]}</div>
+                `;
+                appsContainer.appendChild(card);
 
-            html += `
-            <div style="text-align:center;margin-top:15px;color:#555;font-size:11px;letter-spacing:1px;">
-                🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
-            </div>
-          `;
+                // تأخير بين البطاقات
+                await sleep(300 + Math.random() * 200);
+            }
 
-            resultsEl.innerHTML = html;
+            // رسالة نهائية
+            const finalLine = document.createElement('div');
+            finalLine.classList.add('line', 'success');
+            finalLine.textContent = '[✓] تم تحميل ' + appsToShow.length + ' تطبيق بنجاح.';
+            consoleEl.appendChild(finalLine);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
         function resetSearch() {
