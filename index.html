@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
+            padding: 20px;
             background-image: radial-gradient(ellipse at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%),
                 radial-gradient(ellipse at 20% 80%, rgba(255, 0, 0, 0.02) 0%, transparent 60%),
                 radial-gradient(ellipse at 80% 20%, rgba(255, 0, 0, 0.02) 0%, transparent 60%);
@@ -99,16 +100,17 @@
         .main-container {
             position: relative;
             z-index: 1;
-            width: 95%;
-            max-width: 650px;
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
         .logo-icon {
-            font-size: 55px;
+            font-size: 60px;
             animation: skullFloat 3s ease-in-out infinite;
             display: inline-block;
             filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.7));
@@ -123,29 +125,29 @@
             }
         }
         .header h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             color: #fff;
             text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4);
-            margin: 8px 0;
+            margin: 10px 0;
         }
         .header .subtitle {
-            font-size: 13px;
+            font-size: 14px;
             color: #888;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         .header .made-by {
             display: inline-block;
             background: rgba(255, 0, 0, 0.1);
             border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 6px 18px;
+            padding: 8px 22px;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
             color: var(--red);
             letter-spacing: 2px;
-            margin-top: 10px;
+            margin-top: 12px;
             animation: glowPulse 2s ease-in-out infinite;
         }
         @keyframes glowPulse {
@@ -162,7 +164,7 @@
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 30px 25px;
+            padding: 35px 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 0, 0.08) inset;
             position: relative;
             overflow: hidden;
@@ -171,27 +173,27 @@
             content: '';
             position: absolute;
             top: -1px;
-            left: 30px;
-            right: 30px;
+            left: 40px;
+            right: 40px;
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent);
         }
         .search-card .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
         .search-card input {
             flex: 1;
-            min-width: 200px;
+            min-width: 250px;
             background: #1a1a1a;
             border: 2px solid #2a2a2a;
-            padding: 14px 18px;
+            padding: 16px 20px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 20px;
             color: #fff;
             font-family: 'Courier New', 'Cairo', monospace;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             transition: all 0.3s;
             outline: none;
             direction: ltr;
@@ -204,16 +206,16 @@
         .search-card input::placeholder {
             color: #555;
             letter-spacing: 1px;
-            font-size: 14px;
+            font-size: 15px;
         }
         .btn-search {
             background: linear-gradient(135deg, #b71c1c, #7f0000);
             color: #fff;
             border: none;
-            padding: 14px 28px;
+            padding: 16px 32px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
             letter-spacing: 2px;
             font-family: 'Courier New', 'Cairo', monospace;
@@ -237,16 +239,16 @@
         }
 
         .console {
-            margin-top: 20px;
+            margin-top: 25px;
             background: #050505;
             border: 1px solid #1a1a1a;
             border-radius: 10px;
-            padding: 15px;
-            max-height: 200px;
+            padding: 18px;
+            max-height: 220px;
             overflow-y: auto;
             display: none;
-            font-size: 12px;
-            line-height: 1.8;
+            font-size: 13px;
+            line-height: 2;
         }
         .console.active {
             display: block;
@@ -296,7 +298,7 @@
         }
 
         .results {
-            margin-top: 20px;
+            margin-top: 25px;
             display: none;
         }
         .results.active {
@@ -317,18 +319,18 @@
             background: rgba(255, 0, 0, 0.08);
             border: 1px solid rgba(255, 0, 0, 0.2);
             border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            font-size: 15px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            font-size: 16px;
             text-align: center;
             color: #ff8a80;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
         }
         .result-header .phone-display {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             color: #fff;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             direction: ltr;
             display: block;
         }
@@ -336,11 +338,11 @@
             background: #0d1b2a;
             border: 1px solid #1b3a5c;
             border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
@@ -357,11 +359,11 @@
             transform: translateY(-1px);
         }
         .truecaller-card .tc-icon {
-            font-size: 26px;
+            font-size: 28px;
             background: #1a73e8;
             color: white;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -372,7 +374,7 @@
             flex: 1;
         }
         .truecaller-card .tc-label {
-            font-size: 11px;
+            font-size: 12px;
             color: #6a9fd8;
             letter-spacing: 1px;
         }
@@ -388,21 +390,20 @@
             margin-top: 2px;
         }
         .truecaller-card .tc-arrow {
-            font-size: 18px;
+            font-size: 20px;
             opacity: 0.7;
             margin-right: auto;
         }
 
-        /* زر Google */
         .google-card {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 12px;
-            padding: 14px 16px;
-            margin-bottom: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
@@ -419,9 +420,9 @@
             transform: translateY(-1px);
         }
         .google-card .google-icon {
-            font-size: 24px;
-            width: 44px;
-            height: 44px;
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -433,12 +434,12 @@
             flex: 1;
         }
         .google-card .google-label {
-            font-size: 11px;
+            font-size: 12px;
             color: #888;
             letter-spacing: 1px;
         }
         .google-card .google-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
             color: #fff;
             letter-spacing: 1px;
@@ -449,7 +450,7 @@
             margin-top: 2px;
         }
         .google-card .google-arrow {
-            font-size: 18px;
+            font-size: 20px;
             opacity: 0.7;
             margin-right: auto;
         }
@@ -458,11 +459,11 @@
             background: #111;
             border: 1px solid #1f1f1f;
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             transition: all 0.3s;
             cursor: default;
             position: relative;
@@ -487,9 +488,9 @@
         .app-card.clickable::after {
             content: '🔗 فتح مباشر';
             position: absolute;
-            top: 10px;
-            right: 12px;
-            font-size: 9px;
+            top: 12px;
+            right: 14px;
+            font-size: 10px;
             color: #ff5252;
             letter-spacing: 1px;
             opacity: 0;
@@ -499,13 +500,13 @@
             opacity: 1;
         }
         .app-card .app-icon {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             flex-shrink: 0;
         }
         .app-card .app-info {
@@ -513,20 +514,20 @@
         }
         .app-card .app-name {
             font-weight: bold;
-            font-size: 16px;
+            font-size: 17px;
             color: #fff;
             letter-spacing: 1px;
         }
         .app-card .app-detail {
-            font-size: 12px;
+            font-size: 13px;
             color: #888;
-            margin-top: 2px;
+            margin-top: 3px;
             direction: ltr;
             text-align: right;
         }
-        .app-card .status-dot {
-            width: 10px;
-            height: 10px;
+        .status-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             flex-shrink: 0;
         }
@@ -537,12 +538,16 @@
         .status-inactive {
             background: #555;
         }
+        .status-error {
+            background: #ff1744;
+            box-shadow: 0 0 12px #ff1744;
+        }
         .app-card .risk-badge {
             position: absolute;
-            top: 10px;
-            left: 12px;
+            top: 12px;
+            left: 14px;
             font-size: 10px;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 15px;
             letter-spacing: 1px;
             font-weight: bold;
@@ -562,21 +567,33 @@
             color: #69f0ae;
             border: 1px solid rgba(0, 230, 118, 0.3);
         }
+        .app-card.error-card {
+            border-right: 3px solid #ff1744;
+            background: #1a0000;
+            border-color: #330000;
+        }
+        .app-card.error-card .app-name {
+            color: #ff5252;
+        }
+        .app-card.error-card .app-detail {
+            color: #ff5252;
+            opacity: 0.8;
+        }
 
         .reset-btn {
             display: block;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 18px;
             background: transparent;
             border: 1px solid #333;
             color: #999;
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
             cursor: pointer;
             font-family: 'Courier New', 'Cairo', monospace;
             letter-spacing: 1px;
             transition: all 0.3s;
-            font-size: 13px;
+            font-size: 14px;
         }
         .reset-btn:hover {
             border-color: #666;
@@ -587,12 +604,13 @@
             background: rgba(255, 0, 0, 0.1);
             border: 1px solid rgba(255, 0, 0, 0.3);
             color: #ff5252;
-            padding: 12px;
+            padding: 14px;
             border-radius: 10px;
             text-align: center;
-            margin-top: 15px;
+            margin-top: 18px;
             display: none;
             letter-spacing: 1px;
+            font-size: 14px;
         }
         .error-msg.active {
             display: block;
@@ -613,9 +631,9 @@
 
         .footer {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             color: #444;
-            font-size: 11px;
+            font-size: 12px;
             letter-spacing: 2px;
         }
         .footer span {
@@ -624,23 +642,47 @@
         }
 
         .console::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
         }
         .console::-webkit-scrollbar-track {
             background: #0a0a0a;
         }
         .console::-webkit-scrollbar-thumb {
             background: #333;
-            border-radius: 4px;
+            border-radius: 5px;
         }
 
-        @media (max-width: 500px) {
+        @media (min-width: 1024px) {
+            .main-container {
+                max-width: 800px;
+            }
+            .search-card {
+                padding: 40px 35px;
+            }
+            .search-card input {
+                font-size: 22px;
+                padding: 18px 22px;
+            }
+            .btn-search {
+                padding: 18px 36px;
+                font-size: 18px;
+            }
+            .header h1 {
+                font-size: 36px;
+            }
+            .truecaller-card .tc-name {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
             .search-card {
                 padding: 20px 15px;
             }
             .search-card input {
                 font-size: 15px;
                 padding: 12px;
+                min-width: 150px;
             }
             .btn-search {
                 padding: 12px 18px;
@@ -698,7 +740,7 @@
     <script>
         (function createParticles() {
             const container = document.getElementById('particles');
-            const count = 35;
+            const count = 40;
             for (let i = 0; i < count; i++) {
                 const p = document.createElement('div');
                 p.classList.add('particle');
@@ -726,29 +768,94 @@
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        function formatInternational(phone) {
-            let cleaned = phone.replace(/[^0-9]/g, '');
-            if (cleaned.startsWith('0')) {
-                cleaned = '+964' + cleaned.substring(1);
-            } else if (!cleaned.startsWith('+')) {
-                cleaned = '+' + cleaned;
+        // ========== قاعدة بيانات الدول ==========
+        const countryCodesDB = [
+            // العراق
+            { prefixes: ['0770', '0771', '0772', '0773', '0774', '0775', '0776', '0780', '0781', '0782', '0783', '0784', '0785', '0790', '0791', '0792', '0793', '0794', '0795', '0796', '0797', '0798', '0799'], code: '+964',
+                name: 'العراق' },
+            // السعودية
+            { prefixes: ['050', '053', '054', '055', '056', '057', '058', '059'], code: '+966', name: 'السعودية' },
+            // مصر
+            { prefixes: ['010', '011', '012', '015'], code: '+20', name: 'مصر' },
+            // الأردن
+            { prefixes: ['079', '078', '077'], code: '+962', name: 'الأردن' },
+            // سوريا
+            { prefixes: ['093', '094', '095', '096', '098', '099'], code: '+963', name: 'سوريا' },
+            // لبنان
+            { prefixes: ['03', '70', '71', '76', '78', '79', '81'], code: '+961', name: 'لبنان' },
+            // الإمارات
+            { prefixes: ['050', '052', '054', '055', '056', '058'], code: '+971', name: 'الإمارات' },
+            // الكويت
+            { prefixes: ['5', '6', '9'], code: '+965', name: 'الكويت' },
+            // قطر
+            { prefixes: ['3', '5', '6', '7'], code: '+974', name: 'قطر' },
+            // عمان
+            { prefixes: ['7', '9'], code: '+968', name: 'عمان' },
+            // البحرين
+            { prefixes: ['3'], code: '+973', name: 'البحرين' },
+            // فلسطين
+            { prefixes: ['059', '056'], code: '+970', name: 'فلسطين' },
+            // المغرب
+            { prefixes: ['06', '07'], code: '+212', name: 'المغرب' },
+            // الجزائر
+            { prefixes: ['05', '06', '07'], code: '+213', name: 'الجزائر' },
+            // تونس
+            { prefixes: ['2', '4', '5', '9'], code: '+216', name: 'تونس' },
+            // ليبيا
+            { prefixes: ['091', '092', '094'], code: '+218', name: 'ليبيا' },
+            // السودان
+            { prefixes: ['09', '01'], code: '+249', name: 'السودان' },
+            // اليمن
+            { prefixes: ['07', '77', '73'], code: '+967', name: 'اليمن' },
+        ];
+
+        function detectCountry(phoneDigits) {
+            // phoneDigits: أرقام فقط، بدون + أو 00
+            for (const country of countryCodesDB) {
+                for (const prefix of country.prefixes) {
+                    if (phoneDigits.startsWith(prefix)) {
+                        return country;
+                    }
+                }
             }
-            return cleaned;
+            return null;
         }
 
-        const firstNames = [
-            'علي', 'محمد', 'أحمد', 'حسين', 'مصطفى', 'حسن', 'عباس', 'كرار', 'زيد', 'يوسف',
-            'عمر', 'سجاد', 'نور', 'آمنة', 'فاطمة', 'زينب', 'سارة', 'مريم', 'دعاء', 'رنا'
-        ];
-        const lastNames = [
-            'الجابري', 'الحسني', 'الكاظمي', 'الموسوي', 'العبيدي', 'الشمري', 'الدليمي', 'الربيعي',
-            'الخزرجي', 'الأسدي', 'التميمي', 'الجنابي', 'العاني', 'النعيمي', 'الجبوري'
-        ];
+        function formatInternational(phone) {
+            let cleaned = phone.replace(/[^0-9]/g, '');
 
-        function generateRealName(seed) {
-            const first = firstNames[seed % firstNames.length];
-            const last = lastNames[(seed * 7) % lastNames.length];
-            return first + ' ' + last;
+            // إذا كان يبدأ بـ 00، نحولها إلى +
+            if (phone.startsWith('00')) {
+                cleaned = '+' + cleaned.substring(2);
+                return cleaned;
+            }
+
+            // إذا كان يبدأ بـ +، نرجعه كما هو
+            if (phone.startsWith('+')) {
+                return '+' + cleaned;
+            }
+
+            // إذا كان يبدأ بـ 0 (محلي)، نحاول كشف الدولة
+            if (cleaned.startsWith('0')) {
+                const country = detectCountry(cleaned);
+                if (country) {
+                    return country.code + cleaned.substring(1);
+                }
+                // إذا لم نعرف الدولة، نضيف +964 افتراضياً للعراق
+                return '+964' + cleaned.substring(1);
+            }
+
+            // إذا كان بدون 0 وبدون +، نحاول كشف الدولة بناءً على الطول والبداية
+            const country = detectCountry(cleaned);
+            if (country) {
+                return country.code + cleaned;
+            }
+
+            // افتراضي: نضيف + فقط
+            if (cleaned.length >= 10) {
+                return '+964' + cleaned; // افتراض عراقي
+            }
+            return '+' + cleaned;
         }
 
         function generateFakeData(phone) {
@@ -756,29 +863,26 @@
             const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
 
             const additionalApps = [
-                { name: 'فيسبوك', icon: '📘', color: '#1877F2', risk: 'medium', status: seed % 4 !== 1 },
-                { name: 'انستغرام', icon: '📷', color: '#E4405F', risk: 'high', status: true },
-                { name: 'سناب شات', icon: '👻', color: '#FFFC00', risk: 'high', status: seed % 2 === 0 },
-                { name: 'تيك توك', icon: '🎵', color: '#000000', risk: 'medium', status: seed % 5 !== 2 },
-                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', risk: 'low', status: seed % 3 === 1 },
-                { name: 'لينكد إن', icon: '💼', color: '#0A66C2', risk: 'low', status: seed % 7 !== 0 },
-                { name: 'تمبلر', icon: '📝', color: '#36465D', risk: 'low', status: false },
-                { name: 'ريديت', icon: '🤖', color: '#FF4500', risk: 'high', status: seed % 6 === 0 },
-                { name: 'باي بال', icon: '💰', color: '#003087', risk: 'high', status: seed % 4 === 2 },
-                { name: 'جوجل', icon: '🔍', color: '#4285F4', risk: 'medium', status: true },
+                { name: 'فيسبوك', icon: '📘', color: '#1877F2' },
+                { name: 'انستغرام', icon: '📷', color: '#E4405F' },
+                { name: 'سناب شات', icon: '👻', color: '#FFFC00' },
+                { name: 'تيك توك', icon: '🎵', color: '#000000' },
+                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2' },
+                { name: 'لينكد إن', icon: '💼', color: '#0A66C2' },
+                { name: 'تمبلر', icon: '📝', color: '#36465D' },
+                { name: 'ريديت', icon: '🤖', color: '#FF4500' },
+                { name: 'باي بال', icon: '💰', color: '#003087' },
+                { name: 'جوجل', icon: '🔍', color: '#4285F4' },
             ];
 
             const shuffled = [...additionalApps].sort(() => Math.random() - 0.5);
-            const count = 2 + (seed % 4);
-            const selectedAdditional = shuffled.slice(0, Math.min(count, shuffled.length));
-
-            const realName = generateRealName(seed);
+            const count = 3 + (seed % 5);
+            const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
 
             return {
                 phone: phone,
                 cleanPhone: clean,
-                realName: realName,
-                additionalApps: selectedAdditional,
+                failedApps: selectedApps,
                 generatedAt: new Date().toISOString(),
                 seed: seed,
             };
@@ -824,6 +928,10 @@
             searchBtn.textContent = '⏳ جاري البحث...';
             consoleEl.classList.add('active');
 
+            const internationalNumber = formatInternational(phone);
+            const country = detectCountry(digitsOnly.startsWith('0') ? digitsOnly : '0' + digitsOnly);
+            const countryName = country ? country.name : 'غير معروف';
+
             const logLines = [
                 { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
                 { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
@@ -833,6 +941,8 @@
                 { text: '[~] Switching to backup proxy (TOR exit node)...', type: 'processing', delay: 400 },
                 { text: '[!] Warning: Rate limit exceeded — throttling requests...', type: 'warning', delay: 350 },
                 { text: '[×] Error: Partial data corruption detected — Repairing...', type: 'error', delay: 450 },
+                { text: '[+] Detected country: ' + countryName + ' (' + internationalNumber + ')', type: 'info',
+                delay: 300 },
                 { text: '[+] Querying databases for: ' + digitsOnly.substring(0, 3) + '****' + digitsOnly.slice(-2),
                     type: 'info', delay: 300 },
                 { text: '[~] Scanning associated applications...', type: 'processing', delay: 500 },
@@ -868,21 +978,19 @@
                 storeData(phone, data);
             }
 
-            displayCoreResults(data);
+            displayCoreResults(data, internationalNumber);
             resultsEl.classList.add('active');
             resetBtn.style.display = 'block';
             searchBtn.disabled = false;
             searchBtn.textContent = '🔍 بدء البحث';
             isSearching = false;
 
-            await fetchAdditionalAppsWithErrors(data, consoleEl);
+            await fetchFailedApps(data, consoleEl);
         }
 
-        function displayCoreResults(data) {
+        function displayCoreResults(data, internationalNumber) {
             const resultsEl = document.getElementById('results');
-            const internationalNumber = formatInternational(data.phone);
             const truecallerUrl = `https://www.truecaller.com/search/iq/${internationalNumber.replace('+','')}`;
-            // رابط Google حقيقي للبحث عن الرقم
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + data.phone + '"')}`;
 
             let html = `
@@ -890,17 +998,17 @@
                 <span>🎯 نتيجة البحث عن:</span>
                 <span class="phone-display">${data.phone}</span>
             </div>
-            <!-- Truecaller -->
+            <!-- Truecaller بدون اسم -->
             <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
-                <div class="tc-icon">👤</div>
+                <div class="tc-icon">📞</div>
                 <div class="tc-info">
-                    <div class="tc-label">Truecaller • الاسم الحقيقي</div>
-                    <div class="tc-name">${data.realName}</div>
-                    <div class="tc-detail">🇮🇶 العراق • محدث ${new Date(data.generatedAt).toLocaleDateString('ar-IQ')}</div>
+                    <div class="tc-label">Truecaller</div>
+                    <div class="tc-name">البحث عن الرقم في Truecaller</div>
+                    <div class="tc-detail">🇮🇶 فتح في نافذة جديدة</div>
                 </div>
                 <div class="tc-arrow">🔗</div>
             </a>
-            <!-- Google Search حقيقي -->
+            <!-- Google Search -->
             <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
                 <div class="google-icon">🔍</div>
                 <div class="google-info">
@@ -930,21 +1038,19 @@
                 <div class="status-dot status-active" title="نشط"></div>
                 <div class="risk-badge risk-medium">خطر متوسط</div>
             </div>
-            <div id="additionalAppsContainer"></div>
-            <div style="text-align:center;margin-top:15px;color:#555;font-size:11px;letter-spacing:1px;">
+            <div id="failedAppsContainer"></div>
+            <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
                 🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
             </div>
           `;
             resultsEl.innerHTML = html;
         }
 
-        async function fetchAdditionalAppsWithErrors(data, consoleEl) {
-            const container = document.getElementById('additionalAppsContainer');
+        async function fetchFailedApps(data, consoleEl) {
+            const container = document.getElementById('failedAppsContainer');
             if (!container) return;
 
-            const appsToTry = data.additionalApps;
-            const riskLabels = { high: 'خطر عالي', medium: 'خطر متوسط', low: 'خطر منخفض' };
-            const riskClasses = { high: 'risk-high', medium: 'risk-medium', low: 'risk-low' };
+            const appsToTry = data.failedApps;
 
             const startMsg = document.createElement('div');
             startMsg.classList.add('line', 'processing');
@@ -953,7 +1059,6 @@
             consoleEl.scrollTop = consoleEl.scrollHeight;
             await sleep(600);
 
-            let successCount = 0;
             let failCount = 0;
 
             for (let i = 0; i < appsToTry.length; i++) {
@@ -974,59 +1079,37 @@
                     consoleEl.scrollTop = consoleEl.scrollHeight;
                 }
 
-                if (Math.random() < 0.7 || app.name === 'تمبلر' || app.name === 'ريديت') {
-                    const failMsg = document.createElement('div');
-                    failMsg.classList.add('line', 'error');
-                    failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
-                    consoleEl.appendChild(failMsg);
-                    consoleEl.scrollTop = consoleEl.scrollHeight;
-                    failCount++;
-                    await sleep(200);
-                    continue;
-                }
-
-                const successMsg = document.createElement('div');
-                successMsg.classList.add('line', 'success');
-                successMsg.textContent = `[✓] تم جلب ${app.name} بنجاح`;
-                consoleEl.appendChild(successMsg);
+                const failMsg = document.createElement('div');
+                failMsg.classList.add('line', 'error');
+                failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
+                consoleEl.appendChild(failMsg);
                 consoleEl.scrollTop = consoleEl.scrollHeight;
-                await sleep(300);
+                failCount++;
+                await sleep(200);
 
-                const statusClass = app.status ? 'status-active' : 'status-inactive';
-                const statusText = app.status ? 'نشط' : 'غير نشط';
                 const card = document.createElement('div');
-                card.className = 'app-card';
-                card.style.animation = `fadeInUp 0.4s ease ${successCount * 0.08}s both`;
+                card.className = 'app-card error-card';
+                card.style.animation = `fadeInUp 0.4s ease ${failCount * 0.08}s both`;
                 card.innerHTML = `
-                    <div class="app-icon" style="background:${app.color}22; color:${app.color};">
+                    <div class="app-icon" style="background:${app.color}22; color:${app.color}; opacity:0.5;">
                       ${app.icon}
                     </div>
                     <div class="app-info">
-                      <div class="app-name">${app.name}</div>
-                      <div class="app-detail">بيانات غير مؤكدة</div>
+                      <div class="app-name">${app.name} <span style="color:#ff5252;">(فشل الجلب)</span></div>
+                      <div class="app-detail" style="color:#ff5252;">تعذر الوصول إلى البيانات</div>
                     </div>
-                    <div class="status-dot ${statusClass}" title="${statusText}"></div>
-                    <div class="risk-badge ${riskClasses[app.risk]}">${riskLabels[app.risk]}</div>
+                    <div class="status-dot status-error" title="فشل"></div>
+                    <div class="risk-badge risk-high">خطأ</div>
                 `;
                 container.appendChild(card);
-                successCount++;
                 await sleep(200);
             }
 
             const finalMsg = document.createElement('div');
-            finalMsg.classList.add('line', 'warning');
-            finalMsg.textContent = `[!] انتهت محاولات الجلب: ${successCount} نجاح، ${failCount} فشل`;
+            finalMsg.classList.add('line', 'error');
+            finalMsg.textContent = `[×] جميع محاولات الجلب فشلت (${failCount} فشل). التطبيقات مخفية أو محمية.`;
             consoleEl.appendChild(finalMsg);
             consoleEl.scrollTop = consoleEl.scrollHeight;
-
-            if (successCount === 0) {
-                const noData = document.createElement('div');
-                noData.style.textAlign = 'center';
-                noData.style.color = '#666';
-                noData.style.marginTop = '10px';
-                noData.textContent = 'لم يتم العثور على تطبيقات إضافية مرتبطة بهذا الرقم.';
-                container.appendChild(noData);
-            }
         }
 
         function resetSearch() {
@@ -1057,9 +1140,9 @@
 
         const placeholderTexts = [
             'أدخل رقم الهاتف...',
-            'مثال: 05xxxxxxxx',
-            'جاهز للبحث...',
-            'OSINT Ready...',
+            'مثال: 077xxxxxxxx',
+            'مثال: 078xxxxxxxx',
+            'مثال: 075xxxxxxxx',
         ];
         let placeholderIndex = 0;
         setInterval(() => {
