@@ -326,7 +326,7 @@
             color: #ff8a80;
             letter-spacing: 2px;
         }
-        .result-header .phone-display {
+        .result-header .query-display {
             font-size: 24px;
             font-weight: bold;
             color: #fff;
@@ -542,6 +542,10 @@
             background: #ff1744;
             box-shadow: 0 0 12px #ff1744;
         }
+        .status-possible {
+            background: #ffab00;
+            box-shadow: 0 0 12px #ffab00;
+        }
         .app-card .risk-badge {
             position: absolute;
             top: 12px;
@@ -716,13 +720,13 @@
         <div class="header">
             <div class="logo-icon">💀</div>
             <h1>OSINT ENGINE</h1>
-            <p class="subtitle">رقمي | تحقيقات | كشف الهوية</p>
+            <p class="subtitle">رقم | يوزر | كشف الحسابات</p>
             <div class="made-by">⚡ مبرمج منصور ⚡</div>
         </div>
 
         <div class="search-card">
             <div class="input-group">
-                <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف..." maxlength="20" autocomplete="off">
+                <input type="text" id="queryInput" placeholder="رقم هاتف أو اسم مستخدم..." maxlength="40" autocomplete="off">
                 <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
             </div>
 
@@ -754,8 +758,8 @@
             }
         })();
 
-        function getStoredData(phone) {
-            const key = 'osint_mansour_' + phone.replace(/[^0-9]/g, '');
+        function getStoredData(query) {
+            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
             const stored = localStorage.getItem(key);
             if (stored) {
                 try { return JSON.parse(stored); } catch (e) { return null; }
@@ -763,98 +767,20 @@
             return null;
         }
 
-        function storeData(phone, data) {
-            const key = 'osint_mansour_' + phone.replace(/[^0-9]/g, '');
+        function storeData(query, data) {
+            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
             localStorage.setItem(key, JSON.stringify(data));
         }
 
-        // ========== قاعدة بيانات الدول ==========
-        const countryCodesDB = [
-            // العراق
-            { prefixes: ['0770', '0771', '0772', '0773', '0774', '0775', '0776', '0780', '0781', '0782', '0783', '0784', '0785', '0790', '0791', '0792', '0793', '0794', '0795', '0796', '0797', '0798', '0799'], code: '+964',
-                name: 'العراق' },
-            // السعودية
-            { prefixes: ['050', '053', '054', '055', '056', '057', '058', '059'], code: '+966', name: 'السعودية' },
-            // مصر
-            { prefixes: ['010', '011', '012', '015'], code: '+20', name: 'مصر' },
-            // الأردن
-            { prefixes: ['079', '078', '077'], code: '+962', name: 'الأردن' },
-            // سوريا
-            { prefixes: ['093', '094', '095', '096', '098', '099'], code: '+963', name: 'سوريا' },
-            // لبنان
-            { prefixes: ['03', '70', '71', '76', '78', '79', '81'], code: '+961', name: 'لبنان' },
-            // الإمارات
-            { prefixes: ['050', '052', '054', '055', '056', '058'], code: '+971', name: 'الإمارات' },
-            // الكويت
-            { prefixes: ['5', '6', '9'], code: '+965', name: 'الكويت' },
-            // قطر
-            { prefixes: ['3', '5', '6', '7'], code: '+974', name: 'قطر' },
-            // عمان
-            { prefixes: ['7', '9'], code: '+968', name: 'عمان' },
-            // البحرين
-            { prefixes: ['3'], code: '+973', name: 'البحرين' },
-            // فلسطين
-            { prefixes: ['059', '056'], code: '+970', name: 'فلسطين' },
-            // المغرب
-            { prefixes: ['06', '07'], code: '+212', name: 'المغرب' },
-            // الجزائر
-            { prefixes: ['05', '06', '07'], code: '+213', name: 'الجزائر' },
-            // تونس
-            { prefixes: ['2', '4', '5', '9'], code: '+216', name: 'تونس' },
-            // ليبيا
-            { prefixes: ['091', '092', '094'], code: '+218', name: 'ليبيا' },
-            // السودان
-            { prefixes: ['09', '01'], code: '+249', name: 'السودان' },
-            // اليمن
-            { prefixes: ['07', '77', '73'], code: '+967', name: 'اليمن' },
-        ];
-
-        function detectCountry(phoneDigits) {
-            for (const country of countryCodesDB) {
-                for (const prefix of country.prefixes) {
-                    if (phoneDigits.startsWith(prefix)) {
-                        return country;
-                    }
-                }
-            }
-            return null;
+        function isPhoneNumber(query) {
+            const cleaned = query.replace(/[^0-9]/g, '');
+            // إذا كان الطول 7 أرقام أو أكثر وأغلب الأحرف أرقام
+            return cleaned.length >= 7 && (cleaned.length / query.length) > 0.7;
         }
 
-        function formatInternational(phone) {
-            let cleaned = phone.replace(/[^0-9]/g, '');
-
-            if (phone.startsWith('00')) {
-                cleaned = '+' + cleaned.substring(2);
-                return cleaned;
-            }
-
-            if (phone.startsWith('+')) {
-                return '+' + cleaned;
-            }
-
-            if (cleaned.startsWith('0')) {
-                const country = detectCountry(cleaned);
-                if (country) {
-                    return country.code + cleaned.substring(1);
-                }
-                return '+964' + cleaned.substring(1);
-            }
-
-            const country = detectCountry(cleaned);
-            if (country) {
-                return country.code + cleaned;
-            }
-
-            if (cleaned.length >= 10) {
-                return '+964' + cleaned;
-            }
-            return '+' + cleaned;
-        }
-
-        function generateFakeData(phone) {
+        function generateFakePhoneData(phone) {
             const clean = phone.replace(/[^0-9]/g, '');
             const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
-
             const additionalApps = [
                 { name: 'فيسبوك', icon: '📘', color: '#1877F2' },
                 { name: 'انستغرام', icon: '📷', color: '#E4405F' },
@@ -867,12 +793,11 @@
                 { name: 'باي بال', icon: '💰', color: '#003087' },
                 { name: 'جوجل', icon: '🔍', color: '#4285F4' },
             ];
-
             const shuffled = [...additionalApps].sort(() => Math.random() - 0.5);
             const count = 3 + (seed % 5);
             const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
-
             return {
+                type: 'phone',
                 phone: phone,
                 cleanPhone: clean,
                 failedApps: selectedApps,
@@ -881,13 +806,33 @@
             };
         }
 
+        function generateUsernameResults(username) {
+            const clean = username.replace(/[^a-zA-Z0-9_]/g, '');
+            const socialApps = [
+                { name: 'فيسبوك', icon: '📘', color: '#1877F2', url: `https://www.facebook.com/${clean}` },
+                { name: 'انستغرام', icon: '📷', color: '#E4405F', url: `https://www.instagram.com/${clean}` },
+                { name: 'سناب شات', icon: '👻', color: '#FFFC00', url: `https://www.snapchat.com/add/${clean}` },
+                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', url: `https://twitter.com/${clean}` },
+                { name: 'تيك توك', icon: '🎵', color: '#000000', url: `https://www.tiktok.com/@${clean}` },
+                { name: 'تيليجرام', icon: '✈️', color: '#0088cc', url: `https://t.me/${clean}` },
+                { name: 'يوتيوب', icon: '▶️', color: '#FF0000', url: `https://www.youtube.com/@${clean}` },
+            ];
+            return {
+                type: 'username',
+                username: username,
+                cleanUsername: clean,
+                socialApps: socialApps,
+                generatedAt: new Date().toISOString(),
+            };
+        }
+
         let isSearching = false;
 
         async function startSearch() {
             if (isSearching) return;
 
-            const input = document.getElementById('phoneInput');
-            const phone = input.value.trim();
+            const input = document.getElementById('queryInput');
+            const query = input.value.trim();
             const errorMsg = document.getElementById('errorMsg');
             const consoleEl = document.getElementById('console');
             const resultsEl = document.getElementById('results');
@@ -902,49 +847,29 @@
             consoleEl.classList.remove('active');
             consoleEl.innerHTML = '';
 
-            if (!phone || phone.replace(/[^0-9]/g, '').length < 7) {
-                errorMsg.textContent = '⚠️ خطأ: الرقم المدخل غير صالح! يجب أن يحتوي على 7 أرقام على الأقل.';
+            if (!query || query.length < 3) {
+                errorMsg.textContent = '⚠️ خطأ: يجب إدخال 3 أحرف على الأقل.';
                 errorMsg.classList.add('active');
                 input.focus();
                 return;
             }
 
-            const digitsOnly = phone.replace(/[^0-9]/g, '');
-            if (digitsOnly.length < 7) {
-                errorMsg.textContent = '⚠️ خطأ: الرقم غير كافٍ! أدخل رقم هاتف حقيقي.';
-                errorMsg.classList.add('active');
-                return;
-            }
+            const phoneMode = isPhoneNumber(query);
 
             isSearching = true;
             searchBtn.disabled = true;
             searchBtn.textContent = '⏳ جاري البحث...';
             consoleEl.classList.add('active');
 
-            const internationalNumber = formatInternational(phone);
-            const country = detectCountry(digitsOnly.startsWith('0') ? digitsOnly : '0' + digitsOnly);
-            const countryName = country ? country.name : 'غير معروف';
-
             const logLines = [
                 { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
                 { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
                 { text: '[~] Establishing encrypted tunnel...', type: 'processing', delay: 300 },
-                { text: '[!] Warning: Firewall detected — bypassing...', type: 'warning', delay: 600 },
-                { text: '[×] Error: Connection refused on port 443 — Retrying...', type: 'error', delay: 500 },
-                { text: '[~] Switching to backup proxy (TOR exit node)...', type: 'processing', delay: 400 },
-                { text: '[!] Warning: Rate limit exceeded — throttling requests...', type: 'warning', delay: 350 },
-                { text: '[×] Error: Partial data corruption detected — Repairing...', type: 'error', delay: 450 },
-                { text: '[+] Detected country: ' + countryName + ' (' + internationalNumber + ')', type: 'info',
-                delay: 300 },
-                { text: '[+] Querying databases for: ' + digitsOnly.substring(0, 3) + '****' + digitsOnly.slice(-2),
-                    type: 'info', delay: 300 },
-                { text: '[~] Scanning associated applications...', type: 'processing', delay: 500 },
-                { text: '[×] Error: Timeout on node #7 — Retrying with node #12...', type: 'error', delay: 400 },
-                { text: '[+] Cross-referencing social media profiles...', type: 'info', delay: 300 },
-                { text: '[!] Warning: Possible honeypot detected — Proceeding with caution...', type: 'warning',
-                    delay: 350 },
-                { text: '[+] Core data successfully retrieved!', type: 'success', delay: 200 },
-                { text: '[✓] Initial scan complete.', type: 'success', delay: 100 },
+                { text: phoneMode ? '[+] Phone number detected.' : '[+] Username detected.', type: 'info',
+                delay: 250 },
+                { text: '[~] Querying databases...', type: 'processing', delay: 400 },
+                { text: '[+] Cross-referencing profiles...', type: 'info', delay: 350 },
+                { text: '[✓] Scan complete.', type: 'success', delay: 150 },
             ];
 
             for (let i = 0; i < logLines.length; i++) {
@@ -961,38 +886,52 @@
             cursorLine.innerHTML = '[>] Loading results... <span class="cursor-blink"></span>';
             consoleEl.appendChild(cursorLine);
             consoleEl.scrollTop = consoleEl.scrollHeight;
-
-            await sleep(800);
+            await sleep(700);
             cursorLine.remove();
 
-            let data = getStoredData(phone);
-            if (!data) {
-                data = generateFakeData(phone);
-                storeData(phone, data);
+            if (phoneMode) {
+                let data = getStoredData(query);
+                if (!data) {
+                    data = generateFakePhoneData(query);
+                    storeData(query, data);
+                }
+                // نستخدم الرقم كما هو تماماً
+                displayPhoneResults(data, query);
+                resultsEl.classList.add('active');
+                resetBtn.style.display = 'block';
+                searchBtn.disabled = false;
+                searchBtn.textContent = '🔍 بدء البحث';
+                isSearching = false;
+                await fetchFailedApps(data, consoleEl);
+            } else {
+                const data = generateUsernameResults(query);
+                displayUsernameResults(data);
+                resultsEl.classList.add('active');
+                resetBtn.style.display = 'block';
+                searchBtn.disabled = false;
+                searchBtn.textContent = '🔍 بدء البحث';
+                isSearching = false;
+
+                const finalLine = document.createElement('div');
+                finalLine.classList.add('line', 'success');
+                finalLine.textContent = '[✓] تم العثور على ' + data.socialApps.length + ' رابط محتمل.';
+                consoleEl.appendChild(finalLine);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
             }
-
-            displayCoreResults(data, internationalNumber);
-            resultsEl.classList.add('active');
-            resetBtn.style.display = 'block';
-            searchBtn.disabled = false;
-            searchBtn.textContent = '🔍 بدء البحث';
-            isSearching = false;
-
-            await fetchFailedApps(data, consoleEl);
         }
 
-        function displayCoreResults(data, internationalNumber) {
+        function displayPhoneResults(data, rawPhone) {
             const resultsEl = document.getElementById('results');
-            // رابط Truecaller عام (بدون تحديد دولة)
-            const truecallerUrl = `https://www.truecaller.com/search/${internationalNumber.replace('+','')}`;
-            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + data.phone + '"')}`;
+            // استخدام الرقم كما هو لإزالة + أو غيره لتناسب الرابط
+            const cleanForUrl = rawPhone.replace(/[^0-9+]/g, ''); // نحتفظ بـ + إن وجدت
+            const truecallerUrl = `https://www.truecaller.com/search/${cleanForUrl}`;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
 
             let html = `
             <div class="result-header">
-                <span>🎯 نتيجة البحث عن:</span>
-                <span class="phone-display">${data.phone}</span>
+                <span>🎯 نتيجة البحث عن الرقم:</span>
+                <span class="query-display">${rawPhone}</span>
             </div>
-            <!-- Truecaller -->
             <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
                 <div class="tc-icon">📞</div>
                 <div class="tc-info">
@@ -1002,7 +941,6 @@
                 </div>
                 <div class="tc-arrow">🔗</div>
             </a>
-            <!-- Google Search -->
             <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
                 <div class="google-icon">🔍</div>
                 <div class="google-info">
@@ -1012,8 +950,7 @@
                 </div>
                 <div class="google-arrow">🌐</div>
             </a>
-            <!-- واتساب -->
-            <div class="app-card clickable" onclick="window.open('https://wa.me/${internationalNumber.replace('+','')}', '_blank')">
+            <div class="app-card clickable" onclick="window.open('https://wa.me/${cleanForUrl.replace('+','')}', '_blank')">
                 <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
                 <div class="app-info">
                     <div class="app-name">واتساب</div>
@@ -1022,8 +959,7 @@
                 <div class="status-dot status-active" title="نشط"></div>
                 <div class="risk-badge risk-low">خطر منخفض</div>
             </div>
-            <!-- تيليجرام -->
-            <div class="app-card clickable" onclick="window.open('tg://resolve?phone=${internationalNumber}', '_blank')">
+            <div class="app-card clickable" onclick="window.open('tg://resolve?phone=${cleanForUrl}', '_blank')">
                 <div class="app-icon" style="background:#0088cc22; color:#0088cc;">✈️</div>
                 <div class="app-info">
                     <div class="app-name">تيليجرام</div>
@@ -1040,12 +976,55 @@
             resultsEl.innerHTML = html;
         }
 
+        function displayUsernameResults(data) {
+            const resultsEl = document.getElementById('results');
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(data.username)}`;
+
+            let html = `
+            <div class="result-header">
+                <span>🔍 نتيجة البحث عن المستخدم:</span>
+                <span class="query-display">${data.username}</span>
+            </div>
+            <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
+                <div class="google-icon">🔍</div>
+                <div class="google-info">
+                    <div class="google-label">Google • بحث متقدم</div>
+                    <div class="google-title">البحث عن ${data.username} في Google</div>
+                    <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
+                </div>
+                <div class="google-arrow">🌐</div>
+            </a>
+          `;
+
+            data.socialApps.forEach((app, index) => {
+                html += `
+                <div class="app-card clickable" onclick="window.open('${app.url}', '_blank')" style="animation: fadeInUp 0.3s ease ${index * 0.05}s both;">
+                    <div class="app-icon" style="background:${app.color}22; color:${app.color};">
+                      ${app.icon}
+                    </div>
+                    <div class="app-info">
+                      <div class="app-name">${app.name}</div>
+                      <div class="app-detail">${app.url.replace('https://','')}</div>
+                    </div>
+                    <div class="status-dot status-possible" title="محتمل"></div>
+                    <div class="risk-badge risk-medium">محتمل</div>
+                </div>
+              `;
+            });
+
+            html += `
+            <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
+                🔒 روابط محتملة | مبرمج منصور
+            </div>
+          `;
+            resultsEl.innerHTML = html;
+        }
+
         async function fetchFailedApps(data, consoleEl) {
             const container = document.getElementById('failedAppsContainer');
-            if (!container) return;
+            if (!container || !data.failedApps) return;
 
             const appsToTry = data.failedApps;
-
             const startMsg = document.createElement('div');
             startMsg.classList.add('line', 'processing');
             startMsg.textContent = '[~] بدء محاولات جلب التطبيقات الإضافية...';
@@ -1054,7 +1033,6 @@
             await sleep(600);
 
             let failCount = 0;
-
             for (let i = 0; i < appsToTry.length; i++) {
                 const app = appsToTry[i];
                 const preErrors = [
@@ -1063,7 +1041,6 @@
                     { text: `[!] تحذير: شهادة SSL غير صالحة لـ ${app.name}`, type: 'warning' },
                     { text: `[×] خطأ: تم رفض الاتصال من قبل ${app.name} (خطأ 403)`, type: 'error' },
                 ];
-
                 for (const log of preErrors) {
                     await sleep(300 + Math.random() * 400);
                     const lineDiv = document.createElement('div');
@@ -1072,7 +1049,6 @@
                     consoleEl.appendChild(lineDiv);
                     consoleEl.scrollTop = consoleEl.scrollHeight;
                 }
-
                 const failMsg = document.createElement('div');
                 failMsg.classList.add('line', 'error');
                 failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
@@ -1085,9 +1061,7 @@
                 card.className = 'app-card error-card';
                 card.style.animation = `fadeInUp 0.4s ease ${failCount * 0.08}s both`;
                 card.innerHTML = `
-                    <div class="app-icon" style="background:${app.color}22; color:${app.color}; opacity:0.5;">
-                      ${app.icon}
-                    </div>
+                    <div class="app-icon" style="background:${app.color}22; color:${app.color}; opacity:0.5;">${app.icon}</div>
                     <div class="app-info">
                       <div class="app-name">${app.name} <span style="color:#ff5252;">(فشل الجلب)</span></div>
                       <div class="app-detail" style="color:#ff5252;">تعذر الوصول إلى البيانات</div>
@@ -1098,7 +1072,6 @@
                 container.appendChild(card);
                 await sleep(200);
             }
-
             const finalMsg = document.createElement('div');
             finalMsg.classList.add('line', 'error');
             finalMsg.textContent = `[×] جميع محاولات الجلب فشلت (${failCount} فشل). التطبيقات مخفية أو محمية.`;
@@ -1114,8 +1087,8 @@
             document.getElementById('errorMsg').classList.remove('active');
             document.getElementById('errorMsg').textContent = '';
             document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('phoneInput').value = '';
-            document.getElementById('phoneInput').focus();
+            document.getElementById('queryInput').value = '';
+            document.getElementById('queryInput').focus();
             document.getElementById('searchBtn').disabled = false;
             document.getElementById('searchBtn').textContent = '🔍 بدء البحث';
             isSearching = false;
@@ -1125,7 +1098,7 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        document.getElementById('phoneInput').addEventListener('keydown', function(e) {
+        document.getElementById('queryInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 startSearch();
@@ -1133,14 +1106,14 @@
         });
 
         const placeholderTexts = [
-            'أدخل رقم الهاتف...',
+            'رقم هاتف أو اسم مستخدم...',
             'مثال: 077xxxxxxxx',
-            'مثال: 078xxxxxxxx',
-            'مثال: 075xxxxxxxx',
+            'مثال: +964770000000',
+            'مثال: @mansour',
         ];
         let placeholderIndex = 0;
         setInterval(() => {
-            const input = document.getElementById('phoneInput');
+            const input = document.getElementById('queryInput');
             if (document.activeElement !== input && !input.value) {
                 placeholderIndex = (placeholderIndex + 1) % placeholderTexts.length;
                 input.placeholder = placeholderTexts[placeholderIndex];
