@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT - مبرمج منصور</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #111111;
+            --border: #1a1a1a;
+            --text: #c0c0c0;
+            --red: #ff1744;
+            --green: #00e676;
+            --gold: #ffb300;
+            --accent: #d50000;
+            --glow: #ff0000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Courier New', 'Cairo', monospace;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            background-image: radial-gradient(ellipse at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%),
+                radial-gradient(ellipse at 20% 80%, rgba(255, 0, 0, 0.02) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 0, 0, 0.02) 0%, transparent 60%);
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            background: var(--glow);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 95%;
+            max-width: 650px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .logo-icon {
+            font-size: 55px;
+            animation: skullFloat 3s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.7));
+        }
+        @keyframes skullFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4);
+            margin: 8px 0;
+        }
+        .header .subtitle {
+            font-size: 13px;
+            color: #888;
+            letter-spacing: 2px;
+        }
+        .header .made-by {
+            display: inline-block;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--red);
+            letter-spacing: 2px;
+            margin-top: 10px;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.3);
+            }
+        }
+
+        .search-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 0, 0.08) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        .search-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30px;
+            right: 30px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent);
+        }
+        .search-card .input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-card input {
+            flex: 1;
+            min-width: 200px;
+            background: #1a1a1a;
+            border: 2px solid #2a2a2a;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            color: #fff;
+            font-family: 'Courier New', 'Cairo', monospace;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            outline: none;
+            direction: ltr;
+            text-align: center;
+        }
+        .search-card input:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.2), 0 0 0 4px rgba(255, 0, 0, 0.05);
+        }
+        .search-card input::placeholder {
+            color: #555;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+        .btn-search {
+            background: linear-gradient(135deg, #b71c1c, #7f0000);
+            color: #fff;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-family: 'Courier New', 'Cairo', monospace;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-search:hover {
+            box-shadow: 0 0 35px rgba(255, 0, 0, 0.5), 0 0 70px rgba(255, 0, 0, 0.2);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #d32f2f, #9a0000);
+        }
+        .btn-search:active {
+            transform: scale(0.95);
+        }
+        .btn-search:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .console {
+            margin-top: 20px;
+            background: #050505;
+            border: 1px solid #1a1a1a;
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        .console.active {
+            display: block;
+        }
+        .console .line {
+            padding: 2px 0;
+            animation: fadeInLine 0.3s ease;
+        }
+        @keyframes fadeInLine {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .console .line.error {
+            color: #ff5252;
+        }
+        .console .line.warning {
+            color: #ffab00;
+        }
+        .console .line.success {
+            color: #69f0ae;
+        }
+        .console .line.info {
+            color: #448aff;
+        }
+        .console .line.processing {
+            color: #ccc;
+        }
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: #ff0000;
+            animation: blink 0.6s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .results {
+            margin-top: 20px;
+            display: none;
+        }
+        .results.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .result-header {
+            background: rgba(255, 0, 0, 0.08);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            font-size: 15px;
+            text-align: center;
+            color: #ff8a80;
+            letter-spacing: 1px;
+        }
+        .result-header .phone-display {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 3px;
+            direction: ltr;
+            display: block;
+        }
+        .app-card {
+            background: #111;
+            border: 1px solid #1f1f1f;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-card:hover {
+            border-color: #333;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            background: #151515;
+        }
+        /* بطاقات واتساب وتيليجرام قابلة للنقر */
+        .app-card.clickable {
+            cursor: pointer;
+            border-left: 3px solid #ff0000;
+            transition: all 0.3s;
+        }
+        .app-card.clickable:hover {
+            border-color: #ff5252;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4), 0 5px 20px rgba(0, 0, 0, 0.5);
+            background: #1a0000;
+            transform: scale(1.02);
+        }
+        .app-card.clickable::after {
+            content: '🔗 فتح مباشر';
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 9px;
+            color: #ff5252;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .app-card.clickable:hover::after {
+            opacity: 1;
+        }
+        .app-card .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .app-card .app-info {
+            flex: 1;
+        }
+        .app-card .app-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .app-card .app-detail {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+            direction: ltr;
+            text-align: right;
+        }
+        .app-card .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .status-active {
+            background: #00e676;
+            box-shadow: 0 0 12px #00e676;
+        }
+        .status-inactive {
+            background: #555;
+        }
+        .app-card .risk-badge {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 15px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        .risk-high {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff5252;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        .risk-medium {
+            background: rgba(255, 171, 0, 0.2);
+            color: #ffab00;
+            border: 1px solid rgba(255, 171, 0, 0.3);
+        }
+        .risk-low {
+            background: rgba(0, 230, 118, 0.2);
+            color: #69f0ae;
+            border: 1px solid rgba(0, 230, 118, 0.3);
+        }
+
+        .reset-btn {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            background: transparent;
+            border: 1px solid #333;
+            color: #999;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Courier New', 'Cairo', monospace;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        .reset-btn:hover {
+            border-color: #666;
+            color: #fff;
+        }
+
+        .error-msg {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff5252;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+            letter-spacing: 1px;
+        }
+        .error-msg.active {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-8px);
+            }
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #444;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+        .footer span {
+            color: #7f0000;
+            font-weight: bold;
+        }
+
+        .console::-webkit-scrollbar {
+            width: 4px;
+        }
+        .console::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        .console::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 500px) {
+            .search-card {
+                padding: 20px 15px;
+            }
+            .search-card input {
+                font-size: 15px;
+                padding: 12px;
+            }
+            .btn-search {
+                padding: 12px 18px;
+                font-size: 14px;
+                width: 100%;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .app-card {
+                padding: 12px;
+                gap: 10px;
+            }
+            .app-card .app-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="main-container">
+        <div class="header">
+            <div class="logo-icon">💀</div>
+            <h1>OSINT ENGINE</h1>
+            <p class="subtitle">رقمي | تحقيقات | كشف الهوية</p>
+            <div class="made-by">⚡ مبرمج منصور ⚡</div>
+        </div>
+
+        <div class="search-card">
+            <div class="input-group">
+                <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف..." maxlength="20" autocomplete="off">
+                <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
+            </div>
+
+            <div class="console" id="console"></div>
+            <div class="error-msg" id="errorMsg"></div>
+            <div class="results" id="results"></div>
+            <button class="reset-btn" id="resetBtn" style="display:none;" onclick="resetSearch()">🔄 بحث جديد</button>
+        </div>
+
+        <div class="footer">
+            Developed by <span>مبرمج منصور</span> © 2024 — For Educational Purposes Only
+        </div>
+    </div>
+
+    <script>
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            const count = 35;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                const size = Math.random() * 3 + 1;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = Math.random() * 8 + 6 + 's';
+                p.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(p);
+            }
+        })();
+
+        function getStoredData(phone) {
+            const key = 'osint_mansour_' + phone.replace(/[^0-9]/g, '');
+            const stored = localStorage.getItem(key);
+            if (stored) {
+                try { return JSON.parse(stored); } catch (e) { return null; }
+            }
+            return null;
+        }
+
+        function storeData(phone, data) {
+            const key = 'osint_mansour_' + phone.replace(/[^0-9]/g, '');
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        // تحويل الرقم إلى صيغة دولية عراقية (افتراضي)
+        function formatInternational(phone) {
+            let cleaned = phone.replace(/[^0-9]/g, '');
+            // إذا بدأ بـ 0، نحوله إلى +964
+            if (cleaned.startsWith('0')) {
+                cleaned = '+964' + cleaned.substring(1);
+            } else if (!cleaned.startsWith('+')) {
+                cleaned = '+' + cleaned;
+            }
+            return cleaned;
+        }
+
+        function generateFakeData(phone) {
+            const clean = phone.replace(/[^0-9]/g, '');
+            const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
+
+            const appsList = [
+                { name: 'واتساب', icon: '💬', color: '#25D366', risk: 'low', status: true, hasLink: true,
+                    linkType: 'whatsapp' },
+                { name: 'تيليجرام', icon: '✈️', color: '#0088cc', risk: 'medium', status: seed % 3 !== 0, hasLink: true,
+                    linkType: 'telegram' },
+                { name: 'فيسبوك', icon: '📘', color: '#1877F2', risk: 'medium', status: seed % 4 !== 1, hasLink: false },
+                { name: 'انستغرام', icon: '📷', color: '#E4405F', risk: 'high', status: true, hasLink: false },
+                { name: 'سناب شات', icon: '👻', color: '#FFFC00', risk: 'high', status: seed % 2 === 0, hasLink: false },
+                { name: 'تيك توك', icon: '🎵', color: '#000000', risk: 'medium', status: seed % 5 !== 2, hasLink: false },
+                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', risk: 'low', status: seed % 3 === 1, hasLink: false },
+                { name: 'لينكد إن', icon: '💼', color: '#0A66C2', risk: 'low', status: seed % 7 !== 0, hasLink: false },
+                { name: 'تمبلر', icon: '📝', color: '#36465D', risk: 'low', status: false, hasLink: false },
+                { name: 'ريديت', icon: '🤖', color: '#FF4500', risk: 'high', status: seed % 6 === 0, hasLink: false },
+                { name: 'باي بال', icon: '💰', color: '#003087', risk: 'high', status: seed % 4 === 2, hasLink: false },
+                { name: 'جوجل', icon: '🔍', color: '#4285F4', risk: 'medium', status: true, hasLink: false },
+            ];
+
+            const shuffled = [...appsList].sort((a, b) => {
+                const hashA = (seed * appsList.indexOf(a) + 7) % 13;
+                const hashB = (seed * appsList.indexOf(b) + 7) % 13;
+                return hashA - hashB;
+            });
+            const count = 5 + (seed % 4);
+            const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
+
+            // تأكد من وجود واتساب وتيليجرام غالباً
+            if (!selectedApps.find(a => a.name === 'واتساب')) {
+                selectedApps.unshift(appsList[0]); // واتساب
+            }
+            if (!selectedApps.find(a => a.name === 'تيليجرام') && seed % 2 === 0) {
+                selectedApps.splice(1, 0, appsList[1]); // تيليجرام
+            }
+
+            const fakeNames = [
+                'مستخدم_مجهول', 'shadow_walker', 'night_phantom', 'dark_soul',
+                'anonymous_user', 'hidden_one', 'unknown_caller', 'ghost_rider',
+                'silent_voice', 'zero_trace', 'masked_figure', 'void_walker'
+            ];
+            const nameIndex = seed % fakeNames.length;
+
+            return {
+                phone: phone,
+                cleanPhone: clean,
+                apps: selectedApps,
+                fakeName: fakeNames[nameIndex],
+                generatedAt: new Date().toISOString(),
+                seed: seed,
+            };
+        }
+
+        let isSearching = false;
+
+        async function startSearch() {
+            if (isSearching) return;
+
+            const input = document.getElementById('phoneInput');
+            const phone = input.value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+            const consoleEl = document.getElementById('console');
+            const resultsEl = document.getElementById('results');
+            const resetBtn = document.getElementById('resetBtn');
+            const searchBtn = document.getElementById('searchBtn');
+
+            errorMsg.classList.remove('active');
+            errorMsg.textContent = '';
+            resultsEl.classList.remove('active');
+            resultsEl.innerHTML = '';
+            resetBtn.style.display = 'none';
+            consoleEl.classList.remove('active');
+            consoleEl.innerHTML = '';
+
+            if (!phone || phone.replace(/[^0-9]/g, '').length < 7) {
+                errorMsg.textContent = '⚠️ خطأ: الرقم المدخل غير صالح! يجب أن يحتوي على 7 أرقام على الأقل.';
+                errorMsg.classList.add('active');
+                input.focus();
+                return;
+            }
+
+            const digitsOnly = phone.replace(/[^0-9]/g, '');
+            if (digitsOnly.length < 7) {
+                errorMsg.textContent = '⚠️ خطأ: الرقم غير كافٍ! أدخل رقم هاتف حقيقي.';
+                errorMsg.classList.add('active');
+                return;
+            }
+
+            isSearching = true;
+            searchBtn.disabled = true;
+            searchBtn.textContent = '⏳ جاري البحث...';
+            consoleEl.classList.add('active');
+
+            const logLines = [
+                { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
+                { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
+                { text: '[~] Establishing encrypted tunnel...', type: 'processing', delay: 300 },
+                { text: '[!] Warning: Firewall detected — bypassing...', type: 'warning', delay: 600 },
+                { text: '[×] Error: Connection refused on port 443 — Retrying...', type: 'error', delay: 500 },
+                { text: '[~] Switching to backup proxy (TOR exit node)...', type: 'processing', delay: 400 },
+                { text: '[!] Warning: Rate limit exceeded — throttling requests...', type: 'warning', delay: 350 },
+                { text: '[×] Error: Partial data corruption detected — Repairing...', type: 'error', delay: 450 },
+                { text: '[+] Querying databases for: ' + digitsOnly.substring(0, 3) + '****' + digitsOnly.slice(-2),
+                    type: 'info', delay: 300 },
+                { text: '[~] Scanning associated applications...', type: 'processing', delay: 500 },
+                { text: '[×] Error: Timeout on node #7 — Retrying with node #12...', type: 'error', delay: 400 },
+                { text: '[+] Cross-referencing social media profiles...', type: 'info', delay: 300 },
+                { text: '[!] Warning: Possible honeypot detected — Proceeding with caution...', type: 'warning',
+                    delay: 350 },
+                { text: '[+] Data successfully retrieved!', type: 'success', delay: 200 },
+                { text: '[✓] Search Complete — ' + digitsOnly.length + ' digits analyzed.', type: 'success',
+                delay: 100 },
+            ];
+
+            for (let i = 0; i < logLines.length; i++) {
+                await sleep(logLines[i].delay);
+                const lineDiv = document.createElement('div');
+                lineDiv.classList.add('line', logLines[i].type);
+                lineDiv.textContent = logLines[i].text;
+                consoleEl.appendChild(lineDiv);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+            }
+
+            const cursorLine = document.createElement('div');
+            cursorLine.classList.add('line', 'processing');
+            cursorLine.innerHTML = '[>] Processing results... <span class="cursor-blink"></span>';
+            consoleEl.appendChild(cursorLine);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+
+            await sleep(800);
+            cursorLine.remove();
+
+            let data = getStoredData(phone);
+            if (!data) {
+                data = generateFakeData(phone);
+                storeData(phone, data);
+            }
+
+            await sleep(300);
+            displayResults(data);
+            resultsEl.classList.add('active');
+            resetBtn.style.display = 'block';
+            searchBtn.disabled = false;
+            searchBtn.textContent = '🔍 بدء البحث';
+            isSearching = false;
+
+            const finalLine = document.createElement('div');
+            finalLine.classList.add('line', 'success');
+            finalLine.textContent = '[✓] تم العثور على ' + data.apps.length + ' تطبيق مرتبط بهذا الرقم.';
+            consoleEl.appendChild(finalLine);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function displayResults(data) {
+            const resultsEl = document.getElementById('results');
+            const riskLabels = { high: 'خطر عالي', medium: 'خطر متوسط', low: 'خطر منخفض' };
+            const riskClasses = { high: 'risk-high', medium: 'risk-medium', low: 'risk-low' };
+            const internationalNumber = formatInternational(data.phone);
+
+            let html = `
+            <div class="result-header">
+                <span>🎯 نتيجة البحث عن:</span>
+                <span class="phone-display">${data.phone}</span>
+                <span style="font-size:12px;color:#888;">الاسم المستعار: ${data.fakeName}</span>
+            </div>
+          `;
+
+            data.apps.forEach((app, index) => {
+                const statusClass = app.status ? 'status-active' : 'status-inactive';
+                const statusText = app.status ? 'نشط' : 'غير نشط';
+                let clickableClass = '';
+                let onclickAttr = '';
+
+                if (app.hasLink) {
+                    clickableClass = 'clickable';
+                    let link = '';
+                    if (app.linkType === 'whatsapp') {
+                        link = `https://wa.me/${internationalNumber.replace('+', '')}`;
+                    } else if (app.linkType === 'telegram') {
+                        // رابط عميق للتلغرام
+                        link = `tg://resolve?phone=${internationalNumber}`;
+                        // fallback: رابط ويب
+                        // link = `https://t.me/${internationalNumber}`;
+                    }
+                    onclickAttr = `onclick="window.open('${link}', '_blank')"`;
+                }
+
+                html += `
+              <div class="app-card ${clickableClass}" style="animation: fadeInUp 0.4s ease ${index * 0.08}s both;" ${onclickAttr}>
+                <div class="app-icon" style="background:${app.color}22; color:${app.color};">
+                  ${app.icon}
+                </div>
+                <div class="app-info">
+                  <div class="app-name">${app.name}</div>
+                  <div class="app-detail">@${data.fakeName}_${app.name.toLowerCase().replace(/[^a-z]/g,'')}</div>
+                </div>
+                <div class="status-dot ${statusClass}" title="${statusText}"></div>
+                <div class="risk-badge ${riskClasses[app.risk]}">${riskLabels[app.risk]}</div>
+              </div>
+            `;
+            });
+
+            html += `
+            <div style="text-align:center;margin-top:15px;color:#555;font-size:11px;letter-spacing:1px;">
+                🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
+            </div>
+          `;
+
+            resultsEl.innerHTML = html;
+        }
+
+        function resetSearch() {
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('console').classList.remove('active');
+            document.getElementById('console').innerHTML = '';
+            document.getElementById('errorMsg').classList.remove('active');
+            document.getElementById('errorMsg').textContent = '';
+            document.getElementById('resetBtn').style.display = 'none';
+            document.getElementById('phoneInput').value = '';
+            document.getElementById('phoneInput').focus();
+            document.getElementById('searchBtn').disabled = false;
+            document.getElementById('searchBtn').textContent = '🔍 بدء البحث';
+            isSearching = false;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        document.getElementById('phoneInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                startSearch();
+            }
+        });
+
+        const placeholderTexts = [
+            'أدخل رقم الهاتف...',
+            'مثال: 05xxxxxxxx',
+            'جاهز للبحث...',
+            'OSINT Ready...',
+        ];
+        let placeholderIndex = 0;
+        setInterval(() => {
+            const input = document.getElementById('phoneInput');
+            if (document.activeElement !== input && !input.value) {
+                placeholderIndex = (placeholderIndex + 1) % placeholderTexts.length;
+                input.placeholder = placeholderTexts[placeholderIndex];
+            }
+        }, 3500);
+
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.6s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        console.log('%c⚠️ تحذير %c| %cمبرمج منصور %c| هذه الأداة للأغراض التعليمية فقط!',
+            'color:#ff0000;font-size:20px;', '', 'color:#ffb300;font-size:16px;', '');
+        console.log('%cجميع البيانات المعروضة وهمية ولا تمت للواقع بصلة.', 'color:#888;');
+    </script>
+</body>
+</html>
