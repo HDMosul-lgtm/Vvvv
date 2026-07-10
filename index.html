@@ -16,6 +16,7 @@
             --accent: #d50000;
             --glow: #ff0000;
             --truecaller-blue: #1a73e8;
+            --google-blue: #4285F4;
         }
 
         * {
@@ -336,7 +337,7 @@
             border: 1px solid #1b3a5c;
             border-radius: 12px;
             padding: 14px 16px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -387,6 +388,67 @@
             margin-top: 2px;
         }
         .truecaller-card .tc-arrow {
+            font-size: 18px;
+            opacity: 0.7;
+            margin-right: auto;
+        }
+
+        /* زر Google */
+        .google-card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: #c0c0c0;
+            font-family: 'Courier New', 'Cairo', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        .google-card:hover {
+            background: #1f1f1f;
+            border-color: #4285F4;
+            box-shadow: 0 0 20px rgba(66, 133, 244, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .google-card .google-icon {
+            font-size: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: #1f1f1f;
+        }
+        .google-card .google-info {
+            flex: 1;
+        }
+        .google-card .google-label {
+            font-size: 11px;
+            color: #888;
+            letter-spacing: 1px;
+        }
+        .google-card .google-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+        .google-card .google-detail {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .google-card .google-arrow {
             font-size: 18px;
             opacity: 0.7;
             margin-right: auto;
@@ -693,52 +755,30 @@
             const clean = phone.replace(/[^0-9]/g, '');
             const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
 
-            const appsList = [
-                { name: 'واتساب', icon: '💬', color: '#25D366', risk: 'low', status: true, hasLink: true,
-                    linkType: 'whatsapp' },
-                { name: 'تيليجرام', icon: '✈️', color: '#0088cc', risk: 'medium', status: seed % 3 !== 0, hasLink: true,
-                    linkType: 'telegram' },
-                { name: 'فيسبوك', icon: '📘', color: '#1877F2', risk: 'medium', status: seed % 4 !== 1, hasLink: false },
-                { name: 'انستغرام', icon: '📷', color: '#E4405F', risk: 'high', status: true, hasLink: false },
-                { name: 'سناب شات', icon: '👻', color: '#FFFC00', risk: 'high', status: seed % 2 === 0, hasLink: false },
-                { name: 'تيك توك', icon: '🎵', color: '#000000', risk: 'medium', status: seed % 5 !== 2, hasLink: false },
-                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', risk: 'low', status: seed % 3 === 1, hasLink: false },
-                { name: 'لينكد إن', icon: '💼', color: '#0A66C2', risk: 'low', status: seed % 7 !== 0, hasLink: false },
-                { name: 'تمبلر', icon: '📝', color: '#36465D', risk: 'low', status: false, hasLink: false },
-                { name: 'ريديت', icon: '🤖', color: '#FF4500', risk: 'high', status: seed % 6 === 0, hasLink: false },
-                { name: 'باي بال', icon: '💰', color: '#003087', risk: 'high', status: seed % 4 === 2, hasLink: false },
-                { name: 'جوجل', icon: '🔍', color: '#4285F4', risk: 'medium', status: true, hasLink: false },
+            const additionalApps = [
+                { name: 'فيسبوك', icon: '📘', color: '#1877F2', risk: 'medium', status: seed % 4 !== 1 },
+                { name: 'انستغرام', icon: '📷', color: '#E4405F', risk: 'high', status: true },
+                { name: 'سناب شات', icon: '👻', color: '#FFFC00', risk: 'high', status: seed % 2 === 0 },
+                { name: 'تيك توك', icon: '🎵', color: '#000000', risk: 'medium', status: seed % 5 !== 2 },
+                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', risk: 'low', status: seed % 3 === 1 },
+                { name: 'لينكد إن', icon: '💼', color: '#0A66C2', risk: 'low', status: seed % 7 !== 0 },
+                { name: 'تمبلر', icon: '📝', color: '#36465D', risk: 'low', status: false },
+                { name: 'ريديت', icon: '🤖', color: '#FF4500', risk: 'high', status: seed % 6 === 0 },
+                { name: 'باي بال', icon: '💰', color: '#003087', risk: 'high', status: seed % 4 === 2 },
+                { name: 'جوجل', icon: '🔍', color: '#4285F4', risk: 'medium', status: true },
             ];
 
-            const shuffled = [...appsList].sort((a, b) => {
-                const hashA = (seed * appsList.indexOf(a) + 7) % 13;
-                const hashB = (seed * appsList.indexOf(b) + 7) % 13;
-                return hashA - hashB;
-            });
-            const count = 5 + (seed % 4);
-            const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
+            const shuffled = [...additionalApps].sort(() => Math.random() - 0.5);
+            const count = 2 + (seed % 4);
+            const selectedAdditional = shuffled.slice(0, Math.min(count, shuffled.length));
 
-            if (!selectedApps.find(a => a.name === 'واتساب')) {
-                selectedApps.unshift(appsList[0]);
-            }
-            if (!selectedApps.find(a => a.name === 'تيليجرام') && seed % 2 === 0) {
-                selectedApps.splice(1, 0, appsList[1]);
-            }
-
-            const fakeNames = [
-                'مستخدم_مجهول', 'shadow_walker', 'night_phantom', 'dark_soul',
-                'anonymous_user', 'hidden_one', 'unknown_caller', 'ghost_rider',
-                'silent_voice', 'zero_trace', 'masked_figure', 'void_walker'
-            ];
-            const nameIndex = seed % fakeNames.length;
             const realName = generateRealName(seed);
 
             return {
                 phone: phone,
                 cleanPhone: clean,
-                apps: selectedApps,
-                fakeName: fakeNames[nameIndex],
                 realName: realName,
+                additionalApps: selectedAdditional,
                 generatedAt: new Date().toISOString(),
                 seed: seed,
             };
@@ -784,7 +824,6 @@
             searchBtn.textContent = '⏳ جاري البحث...';
             consoleEl.classList.add('active');
 
-            // مرحلة البحث الأولى (الأخطاء المعهودة)
             const logLines = [
                 { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
                 { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
@@ -801,9 +840,8 @@
                 { text: '[+] Cross-referencing social media profiles...', type: 'info', delay: 300 },
                 { text: '[!] Warning: Possible honeypot detected — Proceeding with caution...', type: 'warning',
                     delay: 350 },
-                { text: '[+] Data successfully retrieved!', type: 'success', delay: 200 },
-                { text: '[✓] Search Complete — ' + digitsOnly.length + ' digits analyzed.', type: 'success',
-                delay: 100 },
+                { text: '[+] Core data successfully retrieved!', type: 'success', delay: 200 },
+                { text: '[✓] Initial scan complete.', type: 'success', delay: 100 },
             ];
 
             for (let i = 0; i < logLines.length; i++) {
@@ -817,7 +855,7 @@
 
             const cursorLine = document.createElement('div');
             cursorLine.classList.add('line', 'processing');
-            cursorLine.innerHTML = '[>] Processing results... <span class="cursor-blink"></span>';
+            cursorLine.innerHTML = '[>] Loading results... <span class="cursor-blink"></span>';
             consoleEl.appendChild(cursorLine);
             consoleEl.scrollTop = consoleEl.scrollHeight;
 
@@ -830,29 +868,29 @@
                 storeData(phone, data);
             }
 
-            // عرض النتائج الأساسية (الرأس و truecaller)
-            displayInitialResults(data);
+            displayCoreResults(data);
             resultsEl.classList.add('active');
             resetBtn.style.display = 'block';
             searchBtn.disabled = false;
             searchBtn.textContent = '🔍 بدء البحث';
             isSearching = false;
 
-            // الآن نضيف التطبيقات تدريجياً مع أخطاء إضافية
-            await revealAppsProgressively(data, consoleEl);
+            await fetchAdditionalAppsWithErrors(data, consoleEl);
         }
 
-        function displayInitialResults(data) {
+        function displayCoreResults(data) {
             const resultsEl = document.getElementById('results');
             const internationalNumber = formatInternational(data.phone);
             const truecallerUrl = `https://www.truecaller.com/search/iq/${internationalNumber.replace('+','')}`;
+            // رابط Google حقيقي للبحث عن الرقم
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + data.phone + '"')}`;
 
             let html = `
             <div class="result-header">
                 <span>🎯 نتيجة البحث عن:</span>
                 <span class="phone-display">${data.phone}</span>
-                <span style="font-size:12px;color:#888;">الاسم المستعار: ${data.fakeName}</span>
             </div>
+            <!-- Truecaller -->
             <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
                 <div class="tc-icon">👤</div>
                 <div class="tc-info">
@@ -862,7 +900,37 @@
                 </div>
                 <div class="tc-arrow">🔗</div>
             </a>
-            <div id="appsContainer"></div>
+            <!-- Google Search حقيقي -->
+            <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
+                <div class="google-icon">🔍</div>
+                <div class="google-info">
+                    <div class="google-label">Google • بحث متقدم</div>
+                    <div class="google-title">البحث عن الرقم في Google</div>
+                    <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
+                </div>
+                <div class="google-arrow">🌐</div>
+            </a>
+            <!-- واتساب -->
+            <div class="app-card clickable" onclick="window.open('https://wa.me/${internationalNumber.replace('+','')}', '_blank')">
+                <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
+                <div class="app-info">
+                    <div class="app-name">واتساب</div>
+                    <div class="app-detail">محادثة مشفرة</div>
+                </div>
+                <div class="status-dot status-active" title="نشط"></div>
+                <div class="risk-badge risk-low">خطر منخفض</div>
+            </div>
+            <!-- تيليجرام -->
+            <div class="app-card clickable" onclick="window.open('tg://resolve?phone=${internationalNumber}', '_blank')">
+                <div class="app-icon" style="background:#0088cc22; color:#0088cc;">✈️</div>
+                <div class="app-info">
+                    <div class="app-name">تيليجرام</div>
+                    <div class="app-detail">قناة مشفرة</div>
+                </div>
+                <div class="status-dot status-active" title="نشط"></div>
+                <div class="risk-badge risk-medium">خطر متوسط</div>
+            </div>
+            <div id="additionalAppsContainer"></div>
             <div style="text-align:center;margin-top:15px;color:#555;font-size:11px;letter-spacing:1px;">
                 🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
             </div>
@@ -870,31 +938,35 @@
             resultsEl.innerHTML = html;
         }
 
-        async function revealAppsProgressively(data, consoleEl) {
-            const appsContainer = document.getElementById('appsContainer');
+        async function fetchAdditionalAppsWithErrors(data, consoleEl) {
+            const container = document.getElementById('additionalAppsContainer');
+            if (!container) return;
+
+            const appsToTry = data.additionalApps;
             const riskLabels = { high: 'خطر عالي', medium: 'خطر متوسط', low: 'خطر منخفض' };
             const riskClasses = { high: 'risk-high', medium: 'risk-medium', low: 'risk-low' };
-            const internationalNumber = formatInternational(data.phone);
 
-            // بعض التطبيقات قد "تفشل" في الظهور لإضافة واقعية
-            const appsToShow = data.apps.filter((app, index) => {
-                // نجعل بعض التطبيقات لا تظهر (نسبة فشل)
-                if (app.name === 'تمبلر' || app.name === 'ريديت') return false; // اختفاء متعمد
-                // احتمالية 30% لعدم ظهور تطبيق عشوائي آخر ما عدا واتساب وتيليجرام
-                if (app.name !== 'واتساب' && app.name !== 'تيليجرام' && Math.random() < 0.3) return false;
-                return true;
-            });
+            const startMsg = document.createElement('div');
+            startMsg.classList.add('line', 'processing');
+            startMsg.textContent = '[~] بدء محاولات جلب التطبيقات الإضافية...';
+            consoleEl.appendChild(startMsg);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+            await sleep(600);
 
-            for (let i = 0; i < appsToShow.length; i++) {
-                const app = appsToShow[i];
-                // أضف رسائل خطأ/تحذير في الكونسول قبل كل بطاقة
-                const preLogs = [
-                    { text: `[~] جلب بيانات ${app.name}...`, type: 'processing' },
-                    { text: `[×] خطأ: تعذر الاتصال بخادم ${app.name} — إعادة المحاولة...`, type: 'error' },
-                    { text: `[!] تحذير: بيانات ${app.name} مشفرة جزئياً`, type: 'warning' },
+            let successCount = 0;
+            let failCount = 0;
+
+            for (let i = 0; i < appsToTry.length; i++) {
+                const app = appsToTry[i];
+                const preErrors = [
+                    { text: `[~] محاولة جلب ${app.name}...`, type: 'processing' },
+                    { text: `[×] خطأ: تعذر حل DNS لخادم ${app.name}`, type: 'error' },
+                    { text: `[!] تحذير: شهادة SSL غير صالحة لـ ${app.name}`, type: 'warning' },
+                    { text: `[×] خطأ: تم رفض الاتصال من قبل ${app.name} (خطأ 403)`, type: 'error' },
                 ];
-                for (const log of preLogs) {
-                    await sleep(400 + Math.random() * 300);
+
+                for (const log of preErrors) {
+                    await sleep(300 + Math.random() * 400);
                     const lineDiv = document.createElement('div');
                     lineDiv.classList.add('line', log.type);
                     lineDiv.textContent = log.text;
@@ -902,50 +974,59 @@
                     consoleEl.scrollTop = consoleEl.scrollHeight;
                 }
 
-                // إنشاء بطاقة التطبيق
-                const statusClass = app.status ? 'status-active' : 'status-inactive';
-                const statusText = app.status ? 'نشط' : 'غير نشط';
-                let clickableClass = '';
-                let onclickAttr = '';
-
-                if (app.hasLink) {
-                    clickableClass = 'clickable';
-                    let link = '';
-                    if (app.linkType === 'whatsapp') {
-                        link = `https://wa.me/${internationalNumber.replace('+', '')}`;
-                    } else if (app.linkType === 'telegram') {
-                        link = `tg://resolve?phone=${internationalNumber}`;
-                    }
-                    onclickAttr = `onclick="window.open('${link}', '_blank')"`;
+                if (Math.random() < 0.7 || app.name === 'تمبلر' || app.name === 'ريديت') {
+                    const failMsg = document.createElement('div');
+                    failMsg.classList.add('line', 'error');
+                    failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
+                    consoleEl.appendChild(failMsg);
+                    consoleEl.scrollTop = consoleEl.scrollHeight;
+                    failCount++;
+                    await sleep(200);
+                    continue;
                 }
 
+                const successMsg = document.createElement('div');
+                successMsg.classList.add('line', 'success');
+                successMsg.textContent = `[✓] تم جلب ${app.name} بنجاح`;
+                consoleEl.appendChild(successMsg);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+                await sleep(300);
+
+                const statusClass = app.status ? 'status-active' : 'status-inactive';
+                const statusText = app.status ? 'نشط' : 'غير نشط';
                 const card = document.createElement('div');
-                card.className = `app-card ${clickableClass}`;
-                card.style.animation = `fadeInUp 0.4s ease ${i * 0.08}s both`;
-                if (onclickAttr) card.setAttribute('onclick', onclickAttr.replace('onclick="', '').replace('"', ''));
+                card.className = 'app-card';
+                card.style.animation = `fadeInUp 0.4s ease ${successCount * 0.08}s both`;
                 card.innerHTML = `
                     <div class="app-icon" style="background:${app.color}22; color:${app.color};">
                       ${app.icon}
                     </div>
                     <div class="app-info">
                       <div class="app-name">${app.name}</div>
-                      <div class="app-detail">@${data.fakeName}_${app.name.toLowerCase().replace(/[^a-z]/g,'')}</div>
+                      <div class="app-detail">بيانات غير مؤكدة</div>
                     </div>
                     <div class="status-dot ${statusClass}" title="${statusText}"></div>
                     <div class="risk-badge ${riskClasses[app.risk]}">${riskLabels[app.risk]}</div>
                 `;
-                appsContainer.appendChild(card);
-
-                // تأخير بين البطاقات
-                await sleep(300 + Math.random() * 200);
+                container.appendChild(card);
+                successCount++;
+                await sleep(200);
             }
 
-            // رسالة نهائية
-            const finalLine = document.createElement('div');
-            finalLine.classList.add('line', 'success');
-            finalLine.textContent = '[✓] تم تحميل ' + appsToShow.length + ' تطبيق بنجاح.';
-            consoleEl.appendChild(finalLine);
+            const finalMsg = document.createElement('div');
+            finalMsg.classList.add('line', 'warning');
+            finalMsg.textContent = `[!] انتهت محاولات الجلب: ${successCount} نجاح، ${failCount} فشل`;
+            consoleEl.appendChild(finalMsg);
             consoleEl.scrollTop = consoleEl.scrollHeight;
+
+            if (successCount === 0) {
+                const noData = document.createElement('div');
+                noData.style.textAlign = 'center';
+                noData.style.color = '#666';
+                noData.style.marginTop = '10px';
+                noData.textContent = 'لم يتم العثور على تطبيقات إضافية مرتبطة بهذا الرقم.';
+                container.appendChild(noData);
+            }
         }
 
         function resetSearch() {
