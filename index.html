@@ -3,1135 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSINT - مبرمج منصور</title>
+    <title>محرك البحث عن رقم الهاتف | OSINT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card: #111111;
-            --border: #1a1a1a;
-            --text: #c0c0c0;
-            --red: #ff1744;
-            --green: #00e676;
-            --gold: #ffb300;
-            --accent: #d50000;
-            --glow: #ff0000;
-            --truecaller-blue: #1a73e8;
-            --google-blue: #4285F4;
+            --gold: #d4af37;
+            --gold-dark: #a88a3a;
+            --gold-light: #f5d77b;
+            --dark: #0a0a0f;
+            --dark-card: rgba(15, 15, 30, 0.92);
+            --text-light: #f0f0f0;
+            --text-muted: #8888aa;
+            --border-gold: 1px solid rgba(212, 175, 55, 0.25);
+            --shadow-gold: 0 8px 40px rgba(212, 175, 55, 0.08);
+            --radius: 16px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: var(--bg);
-            font-family: 'Courier New', 'Cairo', monospace;
-            color: var(--text);
+            font-family: 'Cairo', sans-serif;
+            background: #06060e;
+            color: var(--text-light);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow-x: hidden;
-            padding: 20px;
-            background-image: radial-gradient(ellipse at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%),
-                radial-gradient(ellipse at 20% 80%, rgba(255, 0, 0, 0.02) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(255, 0, 0, 0.02) 0%, transparent 60%);
         }
-
-        .grid-bg {
+        .bg-layer {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            background-image: linear-gradient(rgba(255, 0, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            animation: gridPulse 4s ease-in-out infinite;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
         }
-
-        @keyframes gridPulse {
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
         .particles {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            overflow: hidden;
         }
         .particle {
             position: absolute;
-            background: var(--glow);
+            width: 2px; height: 2px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.4), transparent);
             border-radius: 50%;
-            animation: floatUp linear infinite;
-            opacity: 0;
+            animation: floatParticle 12s infinite ease-in-out;
         }
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.7;
-            }
-            90% {
-                opacity: 0.1;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1.5);
-                opacity: 0;
-            }
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.2; }
+            50% { transform: translateY(-60px) scale(1.5); opacity: 0.6; }
         }
-
-        .main-container {
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 25px 20px 50px;
             position: relative;
             z-index: 1;
-            width: 100%;
-            max-width: 750px;
-            margin: 0 auto;
         }
-
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 25px 20px 15px;
         }
-        .logo-icon {
-            font-size: 60px;
-            animation: skullFloat 3s ease-in-out infinite;
-            display: inline-block;
-            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.7));
-        }
-        @keyframes skullFloat {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-        .header h1 {
-            font-size: 32px;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.4);
-            margin: 10px 0;
-        }
-        .header .subtitle {
-            font-size: 14px;
-            color: #888;
-            letter-spacing: 3px;
-        }
-        .header .made-by {
-            display: inline-block;
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 8px 22px;
-            border-radius: 25px;
-            font-size: 15px;
-            font-weight: bold;
-            color: var(--red);
+        .header .logo {
+            font-size: 30px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmerText 3s linear infinite;
             letter-spacing: 2px;
-            margin-top: 12px;
-            animation: glowPulse 2s ease-in-out infinite;
         }
-        @keyframes glowPulse {
-            0%,
-            100% {
-                box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 25px rgba(255, 0, 0, 0.7), 0 0 50px rgba(255, 0, 0, 0.3);
-            }
+        @keyframes shimmerText {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
         }
-
+        .header .sub { color: var(--text-muted); font-size: 14px; margin-top: 6px; letter-spacing: 1px; }
         .search-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 35px 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 0, 0.08) inset;
-            position: relative;
-            overflow: hidden;
-        }
-        .search-card::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 40px;
-            right: 40px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent);
-        }
-        .search-card .input-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .search-card input {
-            flex: 1;
-            min-width: 250px;
-            background: #1a1a1a;
-            border: 2px solid #2a2a2a;
-            padding: 16px 20px;
-            border-radius: 12px;
-            font-size: 20px;
-            color: #fff;
-            font-family: 'Courier New', 'Cairo', monospace;
-            letter-spacing: 3px;
+            background: var(--dark-card);
+            backdrop-filter: blur(16px);
+            border: var(--border-gold);
+            border-radius: var(--radius);
+            padding: 30px 28px 25px;
+            box-shadow: var(--shadow-gold);
             transition: all 0.3s;
-            outline: none;
-            direction: ltr;
-            text-align: center;
+            margin-bottom: 25px;
         }
-        .search-card input:focus {
-            border-color: var(--red);
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.2), 0 0 0 4px rgba(255, 0, 0, 0.05);
+        .search-card:hover { border-color: rgba(212, 175, 55, 0.35); }
+        .search-card .title-area { text-align: center; margin-bottom: 20px; }
+        .search-card .title-area h2 { font-size: 20px; font-weight: 700; color: var(--text-light); }
+        .search-card .title-area p { color: var(--text-muted); font-size: 13px; }
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
         }
-        .search-card input::placeholder {
-            color: #555;
-            letter-spacing: 1px;
-            font-size: 15px;
-        }
-        .btn-search {
-            background: linear-gradient(135deg, #b71c1c, #7f0000);
-            color: #fff;
-            border: none;
-            padding: 16px 32px;
-            border-radius: 12px;
+        .country-btn {
+            padding: 10px 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 17px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            font-family: 'Courier New', 'Cairo', monospace;
             transition: all 0.3s;
-            white-space: nowrap;
-            position: relative;
-            overflow: hidden;
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
         }
-        .btn-search:hover {
-            box-shadow: 0 0 35px rgba(255, 0, 0, 0.5), 0 0 70px rgba(255, 0, 0, 0.2);
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #d32f2f, #9a0000);
-        }
-        .btn-search:active {
-            transform: scale(0.95);
-        }
-        .btn-search:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .country-btn:hover { background: rgba(212, 175, 55, 0.06); border-color: var(--border-gold); }
+        .country-btn.active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); color: var(--gold); }
+        .country-btn .code { display: block; font-size: 16px; font-weight: 800; color: var(--text-light); }
+        .country-btn .name { font-size: 10px; opacity: 0.6; }
+        .input-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .input-wrap { flex: 1; min-width: 200px; position: relative; }
+        .input-wrap .prefix {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 14px;
             pointer-events: none;
         }
-
-        .console {
-            margin-top: 25px;
-            background: #050505;
-            border: 1px solid #1a1a1a;
-            border-radius: 10px;
-            padding: 18px;
-            max-height: 220px;
-            overflow-y: auto;
-            display: none;
-            font-size: 13px;
-            line-height: 2;
-        }
-        .console.active {
-            display: block;
-        }
-        .console .line {
-            padding: 2px 0;
-            animation: fadeInLine 0.3s ease;
-        }
-        @keyframes fadeInLine {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        .console .line.error {
-            color: #ff5252;
-        }
-        .console .line.warning {
-            color: #ffab00;
-        }
-        .console .line.success {
-            color: #69f0ae;
-        }
-        .console .line.info {
-            color: #448aff;
-        }
-        .console .line.processing {
-            color: #ccc;
-        }
-        .cursor-blink {
-            display: inline-block;
-            width: 8px;
-            height: 14px;
-            background: #ff0000;
-            animation: blink 0.6s step-end infinite;
-            vertical-align: middle;
-            margin-left: 2px;
-        }
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .results {
-            margin-top: 25px;
-            display: none;
-        }
-        .results.active {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .result-header {
-            background: rgba(255, 0, 0, 0.08);
-            border: 1px solid rgba(255, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 18px;
+        .input-wrap input {
+            width: 100%;
+            padding: 16px 55px 16px 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: var(--text-light);
             font-size: 16px;
-            text-align: center;
-            color: #ff8a80;
-            letter-spacing: 2px;
-        }
-        .result-header .query-display {
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 4px;
-            direction: ltr;
-            display: block;
-        }
-        .truecaller-card {
-            background: #0d1b2a;
-            border: 1px solid #1b3a5c;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
             transition: all 0.3s;
-            text-decoration: none;
-            color: #c0d8f0;
-            font-family: 'Courier New', 'Cairo', monospace;
-            position: relative;
-            overflow: hidden;
-        }
-        .truecaller-card:hover {
-            background: #12253b;
-            border-color: #2a5a9c;
-            box-shadow: 0 0 25px rgba(26, 115, 232, 0.35);
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-        .truecaller-card .tc-icon {
-            font-size: 28px;
-            background: #1a73e8;
-            color: white;
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .truecaller-card .tc-info {
-            flex: 1;
-        }
-        .truecaller-card .tc-label {
-            font-size: 12px;
-            color: #6a9fd8;
-            letter-spacing: 1px;
-        }
-        .truecaller-card .tc-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #ffffff;
-            letter-spacing: 1px;
-        }
-        .truecaller-card .tc-detail {
-            font-size: 11px;
-            color: #6a9fd8;
-            margin-top: 2px;
-        }
-        .truecaller-card .tc-arrow {
-            font-size: 20px;
-            opacity: 0.7;
-            margin-right: auto;
-        }
-
-        .google-card {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: #c0c0c0;
-            font-family: 'Courier New', 'Cairo', monospace;
-            position: relative;
-            overflow: hidden;
-        }
-        .google-card:hover {
-            background: #1f1f1f;
-            border-color: #4285F4;
-            box-shadow: 0 0 20px rgba(66, 133, 244, 0.25);
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-        .google-card .google-icon {
-            font-size: 26px;
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            background: #1f1f1f;
-        }
-        .google-card .google-info {
-            flex: 1;
-        }
-        .google-card .google-label {
-            font-size: 12px;
-            color: #888;
-            letter-spacing: 1px;
-        }
-        .google-card .google-title {
-            font-size: 17px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-        .google-card .google-detail {
-            font-size: 11px;
-            color: #888;
-            margin-top: 2px;
-        }
-        .google-card .google-arrow {
-            font-size: 20px;
-            opacity: 0.7;
-            margin-right: auto;
-        }
-
-        .app-card {
-            background: #111;
-            border: 1px solid #1f1f1f;
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s;
-            cursor: default;
-            position: relative;
-            overflow: hidden;
-        }
-        .app-card:hover {
-            border-color: #333;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-            background: #151515;
-        }
-        .app-card.clickable {
-            cursor: pointer;
-            border-left: 3px solid #ff0000;
-            transition: all 0.3s;
-        }
-        .app-card.clickable:hover {
-            border-color: #ff5252;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4), 0 5px 20px rgba(0, 0, 0, 0.5);
-            background: #1a0000;
-            transform: scale(1.02);
-        }
-        .app-card.clickable::after {
-            content: '🔗 فتح مباشر';
-            position: absolute;
-            top: 12px;
-            right: 14px;
-            font-size: 10px;
-            color: #ff5252;
-            letter-spacing: 1px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .app-card.clickable:hover::after {
-            opacity: 1;
-        }
-        .app-card .app-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            flex-shrink: 0;
-        }
-        .app-card .app-info {
-            flex: 1;
-        }
-        .app-card .app-name {
-            font-weight: bold;
-            font-size: 17px;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-        .app-card .app-detail {
-            font-size: 13px;
-            color: #888;
-            margin-top: 3px;
             direction: ltr;
             text-align: right;
         }
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .status-active {
-            background: #00e676;
-            box-shadow: 0 0 12px #00e676;
-        }
-        .status-inactive {
-            background: #555;
-        }
-        .status-error {
-            background: #ff1744;
-            box-shadow: 0 0 12px #ff1744;
-        }
-        .status-possible {
-            background: #ffab00;
-            box-shadow: 0 0 12px #ffab00;
-        }
-        .app-card .risk-badge {
-            position: absolute;
-            top: 12px;
-            left: 14px;
-            font-size: 10px;
-            padding: 4px 12px;
-            border-radius: 15px;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-        .risk-high {
-            background: rgba(255, 0, 0, 0.2);
-            color: #ff5252;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-        }
-        .risk-medium {
-            background: rgba(255, 171, 0, 0.2);
-            color: #ffab00;
-            border: 1px solid rgba(255, 171, 0, 0.3);
-        }
-        .risk-low {
-            background: rgba(0, 230, 118, 0.2);
-            color: #69f0ae;
-            border: 1px solid rgba(0, 230, 118, 0.3);
-        }
-        .app-card.error-card {
-            border-right: 3px solid #ff1744;
-            background: #1a0000;
-            border-color: #330000;
-        }
-        .app-card.error-card .app-name {
-            color: #ff5252;
-        }
-        .app-card.error-card .app-detail {
-            color: #ff5252;
-            opacity: 0.8;
-        }
-
-        .reset-btn {
-            display: block;
-            width: 100%;
-            margin-top: 18px;
-            background: transparent;
-            border: 1px solid #333;
-            color: #999;
-            padding: 12px;
-            border-radius: 10px;
+        .input-wrap input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 30px rgba(212, 175, 55, 0.04); }
+        .input-wrap input::placeholder { color: #444466; font-size: 14px; }
+        .btn-search {
+            padding: 16px 35px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border: none;
+            border-radius: 12px;
+            color: #0a0a0f;
+            font-size: 16px;
+            font-weight: 800;
             cursor: pointer;
-            font-family: 'Courier New', 'Cairo', monospace;
-            letter-spacing: 1px;
             transition: all 0.3s;
-            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
         }
-        .reset-btn:hover {
-            border-color: #666;
-            color: #fff;
+        .btn-search:hover { transform: scale(1.03); box-shadow: 0 0 50px rgba(212, 175, 55, 0.25); }
+        .results-area { display: none; margin-top: 20px; animation: fadeUp 0.4s ease; }
+        .results-area.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 15px 0 20px;
         }
-
-        .error-msg {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            color: #ff5252;
-            padding: 14px;
+        .link-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border: var(--border-gold);
             border-radius: 10px;
-            text-align: center;
-            margin-top: 18px;
-            display: none;
-            letter-spacing: 1px;
-            font-size: 14px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Cairo', sans-serif;
         }
-        .error-msg.active {
-            display: block;
-            animation: shake 0.5s ease;
+        .link-btn:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: translateY(-2px); }
+        .link-btn i { font-size: 18px; }
+        .link-btn.whatsapp i { color: #25D366; }
+        .link-btn.telegram i { color: #0088cc; }
+        .link-btn.truecaller i { color: #1a73e8; }
+        .link-btn.google i { color: #4285F4; }
+        .result-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255,255,255,0.03);
         }
-        @keyframes shake {
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-            25% {
-                transform: translateX(-8px);
-            }
-            75% {
-                transform: translateX(8px);
-            }
-        }
-
+        .result-info div { text-align: center; }
+        .result-info .num { color: var(--gold); font-size: 15px; font-weight: 700; }
+        .result-info .lbl { color: var(--text-muted); font-size: 10px; }
         .footer {
             text-align: center;
-            margin-top: 25px;
-            color: #444;
-            font-size: 12px;
-            letter-spacing: 2px;
+            padding: 20px 20px 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            margin-top: 35px;
         }
-        .footer span {
-            color: #7f0000;
-            font-weight: bold;
-        }
-
-        .console::-webkit-scrollbar {
-            width: 5px;
-        }
-        .console::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        .console::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 5px;
-        }
-
-        @media (min-width: 1024px) {
-            .main-container {
-                max-width: 800px;
-            }
-            .search-card {
-                padding: 40px 35px;
-            }
-            .search-card input {
-                font-size: 22px;
-                padding: 18px 22px;
-            }
-            .btn-search {
-                padding: 18px 36px;
-                font-size: 18px;
-            }
-            .header h1 {
-                font-size: 36px;
-            }
-            .truecaller-card .tc-name {
-                font-size: 20px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .search-card {
-                padding: 20px 15px;
-            }
-            .search-card input {
-                font-size: 15px;
-                padding: 12px;
-                min-width: 150px;
-            }
-            .btn-search {
-                padding: 12px 18px;
-                font-size: 14px;
-                width: 100%;
-            }
-            .header h1 {
-                font-size: 22px;
-            }
-            .app-card {
-                padding: 12px;
-                gap: 10px;
-            }
-            .app-card .app-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 18px;
-            }
-            .truecaller-card .tc-name {
-                font-size: 16px;
-            }
+        .footer .dev-info { color: var(--text-muted); font-size: 13px; }
+        .footer .dev-info .highlight { color: var(--gold); font-weight: 700; }
+        @media (max-width: 768px) {
+            .container { padding: 20px 14px 30px; }
+            .search-card { padding: 22px 16px 18px; }
+            .input-row { flex-direction: column; }
+            .btn-search { width: 100%; justify-content: center; }
+            .country-grid { grid-template-columns: repeat(auto-fit, minmax(55px, 1fr)); }
+            .links-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
-    <div class="particles" id="particles"></div>
+<div class="bg-layer"></div>
+<div class="particles" id="particles"></div>
 
-    <div class="main-container">
-        <div class="header">
-            <div class="logo-icon">💀</div>
-            <h1>OSINT ENGINE</h1>
-            <p class="subtitle">رقم | يوزر | كشف الحسابات</p>
-            <div class="made-by">⚡ مبرمج منصور ⚡</div>
+<div class="container">
+    <div class="header">
+        <div class="logo">⌾ محرك البحث عن أي رقم</div>
+        <div class="sub">أداة مدمجة - <span class="highlight">@SIN_PHP</span> & <span class="highlight">مبرمج منصور</span></div>
+    </div>
+
+    <div class="search-card">
+        <div class="title-area">
+            <h2>ابحث عن أي رقم هاتف</h2>
+            <p>اختر الدولة، أدخل الرقم ثم اضغط بحث</p>
         </div>
 
-        <div class="search-card">
-            <div class="input-group">
-                <input type="text" id="queryInput" placeholder="رقم هاتف أو اسم مستخدم..." maxlength="40" autocomplete="off">
-                <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
+        <div class="country-grid" id="countryGrid">
+            <div class="country-btn active" data-code="964"><span class="code">+964</span><span class="name">العراق</span></div>
+            <div class="country-btn" data-code="966"><span class="code">+966</span><span class="name">السعودية</span></div>
+            <div class="country-btn" data-code="971"><span class="code">+971</span><span class="name">الإمارات</span></div>
+            <div class="country-btn" data-code="962"><span class="code">+962</span><span class="name">الأردن</span></div>
+            <div class="country-btn" data-code="20"><span class="code">+20</span><span class="name">مصر</span></div>
+            <div class="country-btn" data-code="961"><span class="code">+961</span><span class="name">لبنان</span></div>
+            <div class="country-btn" data-code="967"><span class="code">+967</span><span class="name">اليمن</span></div>
+        </div>
+
+        <div class="input-row">
+            <div class="input-wrap">
+                <span class="prefix" id="phonePrefix">+964</span>
+                <input type="text" id="phoneInput" placeholder="أدخل رقم الهاتف ..." dir="ltr">
             </div>
-
-            <div class="console" id="console"></div>
-            <div class="error-msg" id="errorMsg"></div>
-            <div class="results" id="results"></div>
-            <button class="reset-btn" id="resetBtn" style="display:none;" onclick="resetSearch()">🔄 بحث جديد</button>
-        </div>
-
-        <div class="footer">
-            Developed by <span>مبرمج منصور</span> © 2024 — For Educational Purposes Only
+            <button class="btn-search" id="searchBtn" onclick="generateLinks()">
+                <i class="fas fa-search"></i> بحث شامل
+            </button>
         </div>
     </div>
 
-    <script>
-        (function createParticles() {
-            const container = document.getElementById('particles');
-            const count = 40;
-            for (let i = 0; i < count; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                const size = Math.random() * 3 + 1;
-                p.style.width = size + 'px';
-                p.style.height = size + 'px';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = Math.random() * 8 + 6 + 's';
-                p.style.animationDelay = Math.random() * 8 + 's';
-                container.appendChild(p);
-            }
-        })();
+    <div class="results-area" id="resultsArea"></div>
 
-        function getStoredData(query) {
-            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
-            const stored = localStorage.getItem(key);
-            if (stored) {
-                try { return JSON.parse(stored); } catch (e) { return null; }
-            }
-            return null;
+    <div class="footer">
+        <div class="dev-info">
+            <span class="highlight">@SIN_PHP</span> · <span class="highlight">مبرمج منصور</span> · <span class="highlight">@K_K2P</span>
+        </div>
+        <div style="color:#555577;font-size:11px;">روابط مباشرة لـ Truecaller و Google و WhatsApp والمزيد</div>
+    </div>
+</div>
+
+<script>
+    function createParticles() {
+        const container = document.getElementById('particles');
+        for(let i = 0; i < 35; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 12 + 's';
+            p.style.animationDuration = (10 + Math.random() * 8) + 's';
+            p.style.width = (2 + Math.random() * 3) + 'px';
+            p.style.height = p.style.width;
+            container.appendChild(p);
         }
+    }
+    createParticles();
 
-        function storeData(query, data) {
-            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
-            localStorage.setItem(key, JSON.stringify(data));
-        }
-
-        function isPhoneNumber(query) {
-            const cleaned = query.replace(/[^0-9]/g, '');
-            return cleaned.length >= 7 && (cleaned.length / query.length) > 0.7;
-        }
-
-        function generateFakePhoneData(phone) {
-            const clean = phone.replace(/[^0-9]/g, '');
-            const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
-            const additionalApps = [
-                { name: 'فيسبوك', icon: '📘', color: '#1877F2' },
-                { name: 'انستغرام', icon: '📷', color: '#E4405F' },
-                { name: 'سناب شات', icon: '👻', color: '#FFFC00' },
-                { name: 'تيك توك', icon: '🎵', color: '#000000' },
-                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2' },
-                { name: 'لينكد إن', icon: '💼', color: '#0A66C2' },
-                { name: 'تمبلر', icon: '📝', color: '#36465D' },
-                { name: 'ريديت', icon: '🤖', color: '#FF4500' },
-                { name: 'باي بال', icon: '💰', color: '#003087' },
-                { name: 'جوجل', icon: '🔍', color: '#4285F4' },
-            ];
-            const shuffled = [...additionalApps].sort(() => Math.random() - 0.5);
-            const count = 3 + (seed % 5);
-            const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
-            return {
-                type: 'phone',
-                phone: phone,
-                cleanPhone: clean,
-                failedApps: selectedApps,
-                generatedAt: new Date().toISOString(),
-                seed: seed,
-            };
-        }
-
-        function generateUsernameResults(username) {
-            const clean = username.replace(/[^a-zA-Z0-9_]/g, '');
-            const socialApps = [
-                { name: 'فيسبوك', icon: '📘', color: '#1877F2', url: `https://www.facebook.com/${clean}` },
-                { name: 'انستغرام', icon: '📷', color: '#E4405F', url: `https://www.instagram.com/${clean}` },
-                { name: 'سناب شات', icon: '👻', color: '#FFFC00', url: `https://www.snapchat.com/add/${clean}` },
-                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2', url: `https://twitter.com/${clean}` },
-                { name: 'تيك توك', icon: '🎵', color: '#000000', url: `https://www.tiktok.com/@${clean}` },
-                { name: 'تيليجرام', icon: '✈️', color: '#0088cc', url: `https://t.me/${clean}` },
-                { name: 'يوتيوب', icon: '▶️', color: '#FF0000', url: `https://www.youtube.com/@${clean}` },
-            ];
-            return {
-                type: 'username',
-                username: username,
-                cleanUsername: clean,
-                socialApps: socialApps,
-                generatedAt: new Date().toISOString(),
-            };
-        }
-
-        let isSearching = false;
-
-        async function startSearch() {
-            if (isSearching) return;
-
-            const input = document.getElementById('queryInput');
-            const query = input.value.trim();
-            const errorMsg = document.getElementById('errorMsg');
-            const consoleEl = document.getElementById('console');
-            const resultsEl = document.getElementById('results');
-            const resetBtn = document.getElementById('resetBtn');
-            const searchBtn = document.getElementById('searchBtn');
-
-            errorMsg.classList.remove('active');
-            errorMsg.textContent = '';
-            resultsEl.classList.remove('active');
-            resultsEl.innerHTML = '';
-            resetBtn.style.display = 'none';
-            consoleEl.classList.remove('active');
-            consoleEl.innerHTML = '';
-
-            if (!query || query.length < 3) {
-                errorMsg.textContent = '⚠️ خطأ: يجب إدخال 3 أحرف على الأقل.';
-                errorMsg.classList.add('active');
-                input.focus();
-                return;
-            }
-
-            const phoneMode = isPhoneNumber(query);
-
-            isSearching = true;
-            searchBtn.disabled = true;
-            searchBtn.textContent = '⏳ جاري البحث...';
-            consoleEl.classList.add('active');
-
-            const logLines = [
-                { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
-                { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
-                { text: '[~] Establishing encrypted tunnel...', type: 'processing', delay: 300 },
-                { text: phoneMode ? '[+] Phone number detected.' : '[+] Username detected.', type: 'info',
-                delay: 250 },
-                { text: '[~] Querying databases...', type: 'processing', delay: 400 },
-                { text: '[+] Cross-referencing profiles...', type: 'info', delay: 350 },
-                { text: '[✓] Scan complete.', type: 'success', delay: 150 },
-            ];
-
-            for (let i = 0; i < logLines.length; i++) {
-                await sleep(logLines[i].delay);
-                const lineDiv = document.createElement('div');
-                lineDiv.classList.add('line', logLines[i].type);
-                lineDiv.textContent = logLines[i].text;
-                consoleEl.appendChild(lineDiv);
-                consoleEl.scrollTop = consoleEl.scrollHeight;
-            }
-
-            const cursorLine = document.createElement('div');
-            cursorLine.classList.add('line', 'processing');
-            cursorLine.innerHTML = '[>] Loading results... <span class="cursor-blink"></span>';
-            consoleEl.appendChild(cursorLine);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
-            await sleep(700);
-            cursorLine.remove();
-
-            if (phoneMode) {
-                let data = getStoredData(query);
-                if (!data) {
-                    data = generateFakePhoneData(query);
-                    storeData(query, data);
-                }
-                // نستخدم الرقم كما هو للروابط، مع إزالة المسافات والرموز غير الرقمية عدا +
-                const rawPhone = query.replace(/\s/g, '');
-                displayPhoneResults(data, rawPhone);
-                resultsEl.classList.add('active');
-                resetBtn.style.display = 'block';
-                searchBtn.disabled = false;
-                searchBtn.textContent = '🔍 بدء البحث';
-                isSearching = false;
-                await fetchFailedApps(data, consoleEl);
-            } else {
-                const data = generateUsernameResults(query);
-                displayUsernameResults(data);
-                resultsEl.classList.add('active');
-                resetBtn.style.display = 'block';
-                searchBtn.disabled = false;
-                searchBtn.textContent = '🔍 بدء البحث';
-                isSearching = false;
-
-                const finalLine = document.createElement('div');
-                finalLine.classList.add('line', 'success');
-                finalLine.textContent = '[✓] تم العثور على ' + data.socialApps.length + ' رابط محتمل.';
-                consoleEl.appendChild(finalLine);
-                consoleEl.scrollTop = consoleEl.scrollHeight;
-            }
-        }
-
-        function displayPhoneResults(data, rawPhone) {
-            const resultsEl = document.getElementById('results');
-            // نحضر الرقم المنظف للروابط: نحذف أي شيء غير رقمي ما عدا علامة +
-            const cleanForUrl = rawPhone.replace(/[^0-9+]/g, '');
-            // رابط Truecaller صحيح: لا نضيف دولة، فقط نضع الرقم كما هو (بدون + لبعض الروابط يمكن أن تبقى)
-            const truecallerUrl = `https://www.truecaller.com/search/${encodeURIComponent(cleanForUrl)}`;
-            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
-
-            let html = `
-            <div class="result-header">
-                <span>🎯 نتيجة البحث عن الرقم:</span>
-                <span class="query-display">${rawPhone}</span>
-            </div>
-            <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
-                <div class="tc-icon">📞</div>
-                <div class="tc-info">
-                    <div class="tc-label">Truecaller</div>
-                    <div class="tc-name">البحث عن الرقم في Truecaller</div>
-                    <div class="tc-detail">فتح في نافذة جديدة</div>
-                </div>
-                <div class="tc-arrow">🔗</div>
-            </a>
-            <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
-                <div class="google-icon">🔍</div>
-                <div class="google-info">
-                    <div class="google-label">Google • بحث متقدم</div>
-                    <div class="google-title">البحث عن الرقم في Google</div>
-                    <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
-                </div>
-                <div class="google-arrow">🌐</div>
-            </a>
-            <div class="app-card clickable" onclick="window.open('https://wa.me/${cleanForUrl.replace('+','')}', '_blank')">
-                <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
-                <div class="app-info">
-                    <div class="app-name">واتساب</div>
-                    <div class="app-detail">محادثة مشفرة</div>
-                </div>
-                <div class="status-dot status-active" title="نشط"></div>
-                <div class="risk-badge risk-low">خطر منخفض</div>
-            </div>
-            <div class="app-card clickable" onclick="window.open('tg://resolve?phone=${cleanForUrl}', '_blank')">
-                <div class="app-icon" style="background:#0088cc22; color:#0088cc;">✈️</div>
-                <div class="app-info">
-                    <div class="app-name">تيليجرام</div>
-                    <div class="app-detail">قناة مشفرة</div>
-                </div>
-                <div class="status-dot status-active" title="نشط"></div>
-                <div class="risk-badge risk-medium">خطر متوسط</div>
-            </div>
-            <div id="failedAppsContainer"></div>
-            <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
-                🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
-            </div>
-          `;
-            resultsEl.innerHTML = html;
-        }
-
-        function displayUsernameResults(data) {
-            const resultsEl = document.getElementById('results');
-            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(data.username)}`;
-
-            let html = `
-            <div class="result-header">
-                <span>🔍 نتيجة البحث عن المستخدم:</span>
-                <span class="query-display">${data.username}</span>
-            </div>
-            <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
-                <div class="google-icon">🔍</div>
-                <div class="google-info">
-                    <div class="google-label">Google • بحث متقدم</div>
-                    <div class="google-title">البحث عن ${data.username} في Google</div>
-                    <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
-                </div>
-                <div class="google-arrow">🌐</div>
-            </a>
-          `;
-
-            data.socialApps.forEach((app, index) => {
-                html += `
-                <div class="app-card clickable" onclick="window.open('${app.url}', '_blank')" style="animation: fadeInUp 0.3s ease ${index * 0.05}s both;">
-                    <div class="app-icon" style="background:${app.color}22; color:${app.color};">
-                      ${app.icon}
-                    </div>
-                    <div class="app-info">
-                      <div class="app-name">${app.name}</div>
-                      <div class="app-detail">${app.url.replace('https://','')}</div>
-                    </div>
-                    <div class="status-dot status-possible" title="محتمل"></div>
-                    <div class="risk-badge risk-medium">محتمل</div>
-                </div>
-              `;
-            });
-
-            html += `
-            <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
-                🔒 روابط محتملة | مبرمج منصور
-            </div>
-          `;
-            resultsEl.innerHTML = html;
-        }
-
-        async function fetchFailedApps(data, consoleEl) {
-            const container = document.getElementById('failedAppsContainer');
-            if (!container || !data.failedApps) return;
-
-            const appsToTry = data.failedApps;
-            const startMsg = document.createElement('div');
-            startMsg.classList.add('line', 'processing');
-            startMsg.textContent = '[~] بدء محاولات جلب التطبيقات الإضافية...';
-            consoleEl.appendChild(startMsg);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
-            await sleep(600);
-
-            let failCount = 0;
-            for (let i = 0; i < appsToTry.length; i++) {
-                const app = appsToTry[i];
-                const preErrors = [
-                    { text: `[~] محاولة جلب ${app.name}...`, type: 'processing' },
-                    { text: `[×] خطأ: تعذر حل DNS لخادم ${app.name}`, type: 'error' },
-                    { text: `[!] تحذير: شهادة SSL غير صالحة لـ ${app.name}`, type: 'warning' },
-                    { text: `[×] خطأ: تم رفض الاتصال من قبل ${app.name} (خطأ 403)`, type: 'error' },
-                ];
-                for (const log of preErrors) {
-                    await sleep(300 + Math.random() * 400);
-                    const lineDiv = document.createElement('div');
-                    lineDiv.classList.add('line', log.type);
-                    lineDiv.textContent = log.text;
-                    consoleEl.appendChild(lineDiv);
-                    consoleEl.scrollTop = consoleEl.scrollHeight;
-                }
-                const failMsg = document.createElement('div');
-                failMsg.classList.add('line', 'error');
-                failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
-                consoleEl.appendChild(failMsg);
-                consoleEl.scrollTop = consoleEl.scrollHeight;
-                failCount++;
-                await sleep(200);
-
-                const card = document.createElement('div');
-                card.className = 'app-card error-card';
-                card.style.animation = `fadeInUp 0.4s ease ${failCount * 0.08}s both`;
-                card.innerHTML = `
-                    <div class="app-icon" style="background:${app.color}22; color:${app.color}; opacity:0.5;">${app.icon}</div>
-                    <div class="app-info">
-                      <div class="app-name">${app.name} <span style="color:#ff5252;">(فشل الجلب)</span></div>
-                      <div class="app-detail" style="color:#ff5252;">تعذر الوصول إلى البيانات</div>
-                    </div>
-                    <div class="status-dot status-error" title="فشل"></div>
-                    <div class="risk-badge risk-high">خطأ</div>
-                `;
-                container.appendChild(card);
-                await sleep(200);
-            }
-            const finalMsg = document.createElement('div');
-            finalMsg.classList.add('line', 'error');
-            finalMsg.textContent = `[×] جميع محاولات الجلب فشلت (${failCount} فشل). التطبيقات مخفية أو محمية.`;
-            consoleEl.appendChild(finalMsg);
-            consoleEl.scrollTop = consoleEl.scrollHeight;
-        }
-
-        function resetSearch() {
-            document.getElementById('results').classList.remove('active');
-            document.getElementById('results').innerHTML = '';
-            document.getElementById('console').classList.remove('active');
-            document.getElementById('console').innerHTML = '';
-            document.getElementById('errorMsg').classList.remove('active');
-            document.getElementById('errorMsg').textContent = '';
-            document.getElementById('resetBtn').style.display = 'none';
-            document.getElementById('queryInput').value = '';
-            document.getElementById('queryInput').focus();
-            document.getElementById('searchBtn').disabled = false;
-            document.getElementById('searchBtn').textContent = '🔍 بدء البحث';
-            isSearching = false;
-        }
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        document.getElementById('queryInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                startSearch();
-            }
+    let selectedCode = '964';
+    document.querySelectorAll('.country-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedCode = this.dataset.code;
+            document.getElementById('phonePrefix').textContent = '+' + selectedCode;
         });
+    });
 
-        const placeholderTexts = [
-            'رقم هاتف أو اسم مستخدم...',
-            'مثال: 077xxxxxxxx',
-            'مثال: +964770000000',
-            'مثال: @mansour',
-        ];
-        let placeholderIndex = 0;
-        setInterval(() => {
-            const input = document.getElementById('queryInput');
-            if (document.activeElement !== input && !input.value) {
-                placeholderIndex = (placeholderIndex + 1) % placeholderTexts.length;
-                input.placeholder = placeholderTexts[placeholderIndex];
+    document.getElementById('phoneInput').addEventListener('paste', function() {
+        setTimeout(() => {
+            let val = this.value.trim();
+            if(val.startsWith('+')) {
+                let match = val.match(/^\+(\d+)/);
+                if(match) {
+                    let code = match[1];
+                    let rest = val.substring(code.length + 1);
+                    document.querySelectorAll('.country-btn').forEach(b => {
+                        if(b.dataset.code === code) b.click();
+                    });
+                    this.value = rest;
+                }
             }
-        }, 3500);
+        }, 50);
+    });
 
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.6s ease';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-        });
+    function generateLinks() {
+        let phone = document.getElementById('phoneInput').value.trim();
+        if(!phone) { alert('الرجاء إدخال رقم الهاتف'); return; }
 
-        console.log('%c⚠️ تحذير %c| %cمبرمج منصور %c| هذه الأداة للأغراض التعليمية فقط!',
-            'color:#ff0000;font-size:20px;', '', 'color:#ffb300;font-size:16px;', '');
-        console.log('%cجميع البيانات المعروضة وهمية ولا تمت للواقع بصلة.', 'color:#888;');
-    </script>
+        // إزالة الرموز غير الرقمية عدا +
+        phone = phone.replace(/[^0-9+]/g, '');
+        let code = selectedCode;
+
+        if(phone.startsWith('+')) {
+            let match = phone.match(/^\+(\d+)/);
+            if(match) {
+                code = match[1];
+                phone = phone.substring(code.length + 1);
+            }
+        }
+
+        phone = phone.replace(/^0+/, '');
+        if(!phone || phone.length < 6) {
+            alert('الرجاء إدخال رقم صحيح (6 أرقام على الأقل)');
+            return;
+        }
+
+        const fullPhone = `+${code}${phone}`;
+        const phoneNoPlus = `${code}${phone}`;
+
+        const links = {
+            'Truecaller': `https://www.truecaller.com/search/${encodeURIComponent(fullPhone)}`,
+            'Google': `https://www.google.com/search?q=${encodeURIComponent('"' + fullPhone + '"')}`,
+            'واتساب': `https://wa.me/${phoneNoPlus}`,
+            'تليجرام': `tg://resolve?phone=${fullPhone}`,
+            'فيسبوك': `https://www.facebook.com/search/top/?q=${encodeURIComponent(fullPhone)}`,
+            'انستغرام': `https://www.instagram.com/explore/search/?q=${encodeURIComponent(fullPhone)}`,
+            'تويتر': `https://twitter.com/search?q=${encodeURIComponent(fullPhone)}`,
+            'تيك توك': `https://www.tiktok.com/search?q=${encodeURIComponent(fullPhone)}`,
+            'يوتيوب': `https://www.youtube.com/results?search_query=${encodeURIComponent(fullPhone)}`,
+            'لينكد إن': `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(fullPhone)}`,
+            'سناب شات': `https://www.snapchat.com/add/${phoneNoPlus}`
+        };
+
+        const icons = {
+            'Truecaller': 'fas fa-phone',
+            'Google': 'fab fa-google',
+            'واتساب': 'fab fa-whatsapp',
+            'تليجرام': 'fab fa-telegram',
+            'فيسبوك': 'fab fa-facebook',
+            'انستغرام': 'fab fa-instagram',
+            'تويتر': 'fab fa-twitter',
+            'تيك توك': 'fab fa-tiktok',
+            'يوتيوب': 'fab fa-youtube',
+            'لينكد إن': 'fab fa-linkedin',
+            'سناب شات': 'fab fa-snapchat'
+        };
+
+        const colors = {
+            'Truecaller': 'truecaller',
+            'Google': 'google',
+            'واتساب': 'whatsapp',
+            'تليجرام': 'telegram'
+        };
+
+        let html = `
+            <div class="result-info">
+                <div><div class="lbl">رقم الهاتف</div><div class="num">${fullPhone}</div></div>
+                <div><div class="lbl">رمز الدولة</div><div class="num">+${code}</div></div>
+                <div><div class="lbl">عدد الروابط</div><div class="num">${Object.keys(links).length}</div></div>
+            </div>
+            <div class="links-grid">
+        `;
+
+        for(let [name, url] of Object.entries(links)) {
+            let icon = icons[name] || 'fas fa-link';
+            let colorClass = colors[name] || '';
+            html += `<a href="${url}" target="_blank" class="link-btn ${colorClass}"><i class="${icon}"></i>${name}</a>`;
+        }
+
+        html += `</div>`;
+        document.getElementById('resultsArea').innerHTML = html;
+        document.getElementById('resultsArea').classList.add('active');
+        document.getElementById('resultsArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') generateLinks();
+    });
+</script>
 </body>
 </html>
