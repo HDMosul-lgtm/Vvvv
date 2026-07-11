@@ -38,6 +38,95 @@
             background-image: radial-gradient(ellipse at center, rgba(255, 0, 0, 0.03) 0%, transparent 70%),
                 radial-gradient(ellipse at 20% 80%, rgba(255, 0, 0, 0.02) 0%, transparent 60%),
                 radial-gradient(ellipse at 80% 20%, rgba(255, 0, 0, 0.02) 0%, transparent 60%);
+            position: relative;
+        }
+
+        /* شاشة القفل */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            transition: opacity 0.4s ease;
+        }
+        .lock-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .lock-box {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 35px 30px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 0, 0, 0.2);
+            width: 90%;
+            max-width: 380px;
+        }
+        .lock-box h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .lock-box .lock-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .lock-box input {
+            width: 100%;
+            padding: 14px 20px;
+            margin: 18px 0 12px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 22px;
+            text-align: center;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .lock-box input:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+        .lock-box button {
+            background: #b71c1c;
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            font-family: 'Courier New', monospace;
+        }
+        .lock-box button:hover {
+            background: #d32f2f;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+        }
+        .lock-error {
+            color: #ff5252;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+        .lock-error.show {
+            display: block;
+            animation: shake 0.5s ease;
         }
 
         .grid-bg {
@@ -101,7 +190,7 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 750px;
+            max-width: 780px; /* زيادة للابتوب */
             margin: 0 auto;
         }
 
@@ -125,7 +214,7 @@
             }
         }
         .header h1 {
-            font-size: 32px;
+            font-size: 34px; /* أكبر قليلاً */
             font-weight: bold;
             letter-spacing: 4px;
             color: #fff;
@@ -133,21 +222,22 @@
             margin: 10px 0;
         }
         .header .subtitle {
-            font-size: 14px;
+            font-size: 15px;
             color: #888;
             letter-spacing: 3px;
         }
+        /* تكبير اسم مبرمج منصور */
         .header .made-by {
             display: inline-block;
             background: rgba(255, 0, 0, 0.1);
             border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 8px 22px;
-            border-radius: 25px;
-            font-size: 15px;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 22px; /* كان 15px */
             font-weight: bold;
             color: var(--red);
-            letter-spacing: 2px;
-            margin-top: 12px;
+            letter-spacing: 3px;
+            margin-top: 15px;
             animation: glowPulse 2s ease-in-out infinite;
         }
         @keyframes glowPulse {
@@ -651,7 +741,7 @@
             text-align: center;
             margin-top: 25px;
             color: #444;
-            font-size: 12px;
+            font-size: 13px;
             letter-spacing: 2px;
         }
         .footer span {
@@ -672,10 +762,10 @@
 
         @media (min-width: 1024px) {
             .main-container {
-                max-width: 800px;
+                max-width: 850px;
             }
             .search-card {
-                padding: 40px 35px;
+                padding: 45px 40px;
             }
             .search-card input {
                 font-size: 22px;
@@ -686,11 +776,15 @@
                 font-size: 18px;
             }
             .header h1 {
-                font-size: 36px;
+                font-size: 38px;
             }
             .truecaller-card .tc-name,
             .ext-card .ext-title {
                 font-size: 20px;
+            }
+            .header .made-by {
+                font-size: 26px;
+                padding: 12px 35px;
             }
         }
 
@@ -724,42 +818,101 @@
             .ext-card .ext-title {
                 font-size: 16px;
             }
+            .header .made-by {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
-    <div class="particles" id="particles"></div>
-
-    <div class="main-container">
-        <div class="header">
-            <div class="logo-icon">💀</div>
-            <h1>OSINT ENGINE</h1>
-            <p class="subtitle">رقم | يوزر | كشف الحسابات</p>
-            <div class="made-by">⚡ مبرمج منصور ⚡</div>
+    <!-- شاشة القفل -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="lock-box">
+            <span class="lock-icon">🔒</span>
+            <h2>OSINT LOCK</h2>
+            <p style="color:#aaa; margin-bottom:10px;">أدخل كود الدخول</p>
+            <input type="password" id="lockInput" placeholder="كود الدخول" maxlength="8" autocomplete="off">
+            <button onclick="checkLockCode()">دخول</button>
+            <div class="lock-error" id="lockError">❌ كود خاطئ!</div>
         </div>
+    </div>
 
-        <div class="search-card">
-            <div class="input-group">
-                <input type="text" id="queryInput" placeholder="رقم هاتف أو اسم مستخدم..." maxlength="40" autocomplete="off">
-                <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
+    <!-- المحتوى الأصلي مخفي حتى إلغاء القفل -->
+    <div id="mainContent" style="display: none; width: 100%;">
+        <div class="grid-bg"></div>
+        <div class="particles" id="particles"></div>
+
+        <div class="main-container">
+            <div class="header">
+                <div class="logo-icon">💀</div>
+                <h1>OSINT ENGINE</h1>
+                <p class="subtitle">رقم | يوزر | كشف الحسابات</p>
+                <div class="made-by">⚡ مبرمج منصور ⚡</div>
             </div>
 
-            <div class="console" id="console"></div>
-            <div class="error-msg" id="errorMsg"></div>
-            <div class="results" id="results"></div>
-            <button class="reset-btn" id="resetBtn" style="display:none;" onclick="resetSearch()">🔄 بحث جديد</button>
-        </div>
+            <div class="search-card">
+                <div class="input-group">
+                    <input type="text" id="queryInput" placeholder="رقم هاتف أو اسم مستخدم..." maxlength="40" autocomplete="off">
+                    <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
+                </div>
 
-        <div class="footer">
-            Developed by <span>مبرمج منصور</span> © 2024 — For Educational Purposes Only
+                <div class="console" id="console"></div>
+                <div class="error-msg" id="errorMsg"></div>
+                <div class="results" id="results"></div>
+                <button class="reset-btn" id="resetBtn" style="display:none;" onclick="resetSearch()">🔄 بحث جديد</button>
+            </div>
+
+            <div class="footer">
+                Developed by <span>مبرمج منصور</span> © 2024 — For Educational Purposes Only
+            </div>
         </div>
     </div>
 
     <script>
+        // ============== قفل بكود 2001820 ==============
+        const LOCK_CODE = "2001820";
+        const lockScreen = document.getElementById('lockScreen');
+        const lockInput = document.getElementById('lockInput');
+        const lockError = document.getElementById('lockError');
+        const mainContent = document.getElementById('mainContent');
+
+        function checkLockCode() {
+            if (lockInput.value.trim() === LOCK_CODE) {
+                lockScreen.classList.add('hidden');
+                mainContent.style.display = 'block';
+                // تأخير بسيط لإعادة تفعيل الجسيمات
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 100);
+                // بدء الجسيمات
+                createParticles();
+                // تشغيل الدوال الأصلية
+                window.addEventListener('load', function() {
+                    document.body.style.opacity = '1';
+                });
+            } else {
+                lockError.classList.add('show');
+                lockInput.value = '';
+                lockInput.focus();
+                setTimeout(() => {
+                    lockError.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // السماح بالدخول بالضغط على Enter من حقل القفل
+        lockInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkLockCode();
+            }
+        });
+
+        // ============== باقي الكود الأصلي ==============
         (function createParticles() {
             const container = document.getElementById('particles');
+            if (!container) return;
             const count = 40;
             for (let i = 0; i < count; i++) {
                 const p = document.createElement('div');
@@ -772,7 +925,7 @@
                 p.style.animationDelay = Math.random() * 8 + 's';
                 container.appendChild(p);
             }
-        })();
+        });
 
         function getStoredData(query) {
             const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
@@ -941,11 +1094,6 @@
             const truecallerUrl = `https://www.truecaller.com/search/${encodeURIComponent(cleanForUrl)}`;
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
 
-            // روابط المواقع الجديدة
-            const callerVercelUrl = `https://caller-uegx.vercel.app/?phone=${encodeURIComponent(cleanForUrl)}`;
-            const revealerUrl = `https://revealer.us/search?phone=${encodeURIComponent(cleanForUrl)}`; // افتراضي، قد تحتاج تعديل الرابط
-            const maamUrl = `https://maam.site/?phone=${encodeURIComponent(cleanForUrl)}`;
-
             let html = `
             <div class="result-header">
                 <span>🎯 نتيجة البحث عن الرقم:</span>
@@ -968,34 +1116,6 @@
                     <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
                 </div>
                 <div class="google-arrow">🌐</div>
-            </a>
-            <!-- المواقع الإضافية الجديدة -->
-            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">📱</div>
-                <div class="ext-info">
-                    <div class="ext-label">Caller Vercel</div>
-                    <div class="ext-title">بحث عن الرقم في Caller</div>
-                    <div class="ext-detail">خدمة كشف هوية المتصل</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
-            </a>
-            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">🕵️</div>
-                <div class="ext-info">
-                    <div class="ext-label">Revealer</div>
-                    <div class="ext-title">البحث في Revealer.us</div>
-                    <div class="ext-detail">منصة متقدمة للبحث عن الأرقام</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
-            </a>
-            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">🌐</div>
-                <div class="ext-info">
-                    <div class="ext-label">Maam.site</div>
-                    <div class="ext-title">البحث في Maam</div>
-                    <div class="ext-detail">خدمة استعلام عن الأرقام</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
             </a>
             <div class="app-card clickable" onclick="window.open('https://wa.me/${cleanForUrl.replace('+','')}', '_blank')">
                 <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
@@ -1027,11 +1147,6 @@
             const resultsEl = document.getElementById('results');
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(data.username)}`;
 
-            // إضافة المواقع الجديدة لليوزر (اختياري، مع روابط عامة)
-            const callerVercelUrl = `https://caller-uegx.vercel.app/`;
-            const revealerUrl = `https://revealer.us/`;
-            const maamUrl = `https://maam.site/`;
-
             let html = `
             <div class="result-header">
                 <span>🔍 نتيجة البحث عن المستخدم:</span>
@@ -1045,34 +1160,6 @@
                     <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
                 </div>
                 <div class="google-arrow">🌐</div>
-            </a>
-            <!-- مواقع خارجية (عامة لليوزر) -->
-            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">📱</div>
-                <div class="ext-info">
-                    <div class="ext-label">Caller Vercel</div>
-                    <div class="ext-title">موقع Caller (بحث عام)</div>
-                    <div class="ext-detail">يمكن استخدامه للبحث اليدوي</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
-            </a>
-            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">🕵️</div>
-                <div class="ext-info">
-                    <div class="ext-label">Revealer</div>
-                    <div class="ext-title">موقع Revealer.us</div>
-                    <div class="ext-detail">منصة متقدمة (تسجيل دخول)</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
-            </a>
-            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
-                <div class="ext-icon">🌐</div>
-                <div class="ext-info">
-                    <div class="ext-label">Maam.site</div>
-                    <div class="ext-title">موقع Maam</div>
-                    <div class="ext-detail">خدمة استعلام عامة</div>
-                </div>
-                <div class="ext-arrow">🔗</div>
             </a>
           `;
 
@@ -1194,7 +1281,7 @@
         let placeholderIndex = 0;
         setInterval(() => {
             const input = document.getElementById('queryInput');
-            if (document.activeElement !== input && !input.value) {
+            if (input && document.activeElement !== input && !input.value) {
                 placeholderIndex = (placeholderIndex + 1) % placeholderTexts.length;
                 input.placeholder = placeholderTexts[placeholderIndex];
             }
