@@ -178,47 +178,6 @@
             height: 1px;
             background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.5), transparent);
         }
-
-        /* إضافة شبكة الدول */
-        .country-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .country-btn {
-            padding: 8px 4px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
-            color: #888;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            font-family: 'Courier New', 'Cairo', monospace;
-        }
-        .country-btn:hover {
-            background: rgba(255, 0, 0, 0.1);
-            border-color: rgba(255, 0, 0, 0.3);
-        }
-        .country-btn.active {
-            background: rgba(255, 0, 0, 0.15);
-            border-color: var(--red);
-            color: var(--red);
-        }
-        .country-btn .code {
-            display: block;
-            font-size: 16px;
-            font-weight: 800;
-            color: #fff;
-        }
-        .country-btn .name {
-            font-size: 10px;
-            opacity: 0.6;
-        }
-
         .search-card .input-group {
             display: flex;
             gap: 12px;
@@ -436,7 +395,8 @@
             margin-right: auto;
         }
 
-        .google-card {
+        .google-card,
+        .ext-card {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 12px;
@@ -453,14 +413,22 @@
             position: relative;
             overflow: hidden;
         }
-        .google-card:hover {
+        .google-card:hover,
+        .ext-card:hover {
             background: #1f1f1f;
-            border-color: #4285F4;
-            box-shadow: 0 0 20px rgba(66, 133, 244, 0.25);
             color: #ffffff;
             transform: translateY(-1px);
         }
-        .google-card .google-icon {
+        .google-card:hover {
+            border-color: #4285F4;
+            box-shadow: 0 0 20px rgba(66, 133, 244, 0.25);
+        }
+        .ext-card:hover {
+            border-color: #b0b0b0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+        }
+        .google-card .google-icon,
+        .ext-card .ext-icon {
             font-size: 26px;
             width: 48px;
             height: 48px;
@@ -471,26 +439,31 @@
             flex-shrink: 0;
             background: #1f1f1f;
         }
-        .google-card .google-info {
+        .google-card .google-info,
+        .ext-card .ext-info {
             flex: 1;
         }
-        .google-card .google-label {
+        .google-card .google-label,
+        .ext-card .ext-label {
             font-size: 12px;
             color: #888;
             letter-spacing: 1px;
         }
-        .google-card .google-title {
+        .google-card .google-title,
+        .ext-card .ext-title {
             font-size: 17px;
             font-weight: bold;
             color: #fff;
             letter-spacing: 1px;
         }
-        .google-card .google-detail {
+        .google-card .google-detail,
+        .ext-card .ext-detail {
             font-size: 11px;
             color: #888;
             margin-top: 2px;
         }
-        .google-card .google-arrow {
+        .google-card .google-arrow,
+        .ext-card .ext-arrow {
             font-size: 20px;
             opacity: 0.7;
             margin-right: auto;
@@ -715,7 +688,8 @@
             .header h1 {
                 font-size: 36px;
             }
-            .truecaller-card .tc-name {
+            .truecaller-card .tc-name,
+            .ext-card .ext-title {
                 font-size: 20px;
             }
         }
@@ -746,7 +720,8 @@
                 height: 38px;
                 font-size: 18px;
             }
-            .truecaller-card .tc-name {
+            .truecaller-card .tc-name,
+            .ext-card .ext-title {
                 font-size: 16px;
             }
         }
@@ -766,17 +741,6 @@
         </div>
 
         <div class="search-card">
-            <!-- إضافة شبكة الدول من الكود الأول -->
-            <div class="country-grid" id="countryGrid">
-                <div class="country-btn active" data-code="964"><span class="code">+964</span><span class="name">العراق</span></div>
-                <div class="country-btn" data-code="966"><span class="code">+966</span><span class="name">السعودية</span></div>
-                <div class="country-btn" data-code="971"><span class="code">+971</span><span class="name">الإمارات</span></div>
-                <div class="country-btn" data-code="962"><span class="code">+962</span><span class="name">الأردن</span></div>
-                <div class="country-btn" data-code="20"><span class="code">+20</span><span class="name">مصر</span></div>
-                <div class="country-btn" data-code="961"><span class="code">+961</span><span class="name">لبنان</span></div>
-                <div class="country-btn" data-code="967"><span class="code">+967</span><span class="name">اليمن</span></div>
-            </div>
-
             <div class="input-group">
                 <input type="text" id="queryInput" placeholder="رقم هاتف أو اسم مستخدم..." maxlength="40" autocomplete="off">
                 <button class="btn-search" id="searchBtn" onclick="startSearch()">🔍 بدء البحث</button>
@@ -810,19 +774,51 @@
             }
         })();
 
-        // متغيرات اختيار الدولة
-        let selectedCode = '964';
-        document.querySelectorAll('.country-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                selectedCode = this.dataset.code;
-            });
-        });
+        function getStoredData(query) {
+            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
+            const stored = localStorage.getItem(key);
+            if (stored) {
+                try { return JSON.parse(stored); } catch (e) { return null; }
+            }
+            return null;
+        }
+
+        function storeData(query, data) {
+            const key = 'osint_mansour_' + query.replace(/[^a-zA-Z0-9_@.]/g, '');
+            localStorage.setItem(key, JSON.stringify(data));
+        }
 
         function isPhoneNumber(query) {
             const cleaned = query.replace(/[^0-9]/g, '');
             return cleaned.length >= 7 && (cleaned.length / query.length) > 0.7;
+        }
+
+        function generateFakePhoneData(phone) {
+            const clean = phone.replace(/[^0-9]/g, '');
+            const seed = clean.split('').reduce((a, b) => a + parseInt(b || 0), 0);
+            const additionalApps = [
+                { name: 'فيسبوك', icon: '📘', color: '#1877F2' },
+                { name: 'انستغرام', icon: '📷', color: '#E4405F' },
+                { name: 'سناب شات', icon: '👻', color: '#FFFC00' },
+                { name: 'تيك توك', icon: '🎵', color: '#000000' },
+                { name: 'تويتر / X', icon: '🐦', color: '#1DA1F2' },
+                { name: 'لينكد إن', icon: '💼', color: '#0A66C2' },
+                { name: 'تمبلر', icon: '📝', color: '#36465D' },
+                { name: 'ريديت', icon: '🤖', color: '#FF4500' },
+                { name: 'باي بال', icon: '💰', color: '#003087' },
+                { name: 'جوجل', icon: '🔍', color: '#4285F4' },
+            ];
+            const shuffled = [...additionalApps].sort(() => Math.random() - 0.5);
+            const count = 3 + (seed % 5);
+            const selectedApps = shuffled.slice(0, Math.min(count, shuffled.length));
+            return {
+                type: 'phone',
+                phone: phone,
+                cleanPhone: clean,
+                failedApps: selectedApps,
+                generatedAt: new Date().toISOString(),
+                seed: seed,
+            };
         }
 
         function generateUsernameResults(username) {
@@ -884,7 +880,8 @@
                 { text: '[+] Initializing OSINT Engine v4.2...', type: 'info', delay: 200 },
                 { text: '[+] Connecting to secure nodes...', type: 'info', delay: 400 },
                 { text: '[~] Establishing encrypted tunnel...', type: 'processing', delay: 300 },
-                { text: phoneMode ? '[+] Phone number detected.' : '[+] Username detected.', type: 'info', delay: 250 },
+                { text: phoneMode ? '[+] Phone number detected.' : '[+] Username detected.', type: 'info',
+                delay: 250 },
                 { text: '[~] Querying databases...', type: 'processing', delay: 400 },
                 { text: '[+] Cross-referencing profiles...', type: 'info', delay: 350 },
                 { text: '[✓] Scan complete.', type: 'success', delay: 150 },
@@ -908,117 +905,20 @@
             cursorLine.remove();
 
             if (phoneMode) {
-                // === محرك البحث الجديد من الكود الأول ===
-                let phone = query.replace(/[^0-9+]/g, '');
-                let code = selectedCode;
-
-                if(phone.startsWith('+')) {
-                    let match = phone.match(/^\+(\d+)/);
-                    if(match) {
-                        code = match[1];
-                        phone = phone.substring(code.length + 1);
-                        // تحديث الزر النشط إذا وجد
-                        document.querySelectorAll('.country-btn').forEach(b => {
-                            if(b.dataset.code === code) b.click();
-                        });
-                    }
+                let data = getStoredData(query);
+                if (!data) {
+                    data = generateFakePhoneData(query);
+                    storeData(query, data);
                 }
-
-                phone = phone.replace(/^0+/, '');
-                if(!phone || phone.length < 6) {
-                    errorMsg.textContent = '⚠️ خطأ: رقم الهاتف غير صالح.';
-                    errorMsg.classList.add('active');
-                    searchBtn.disabled = false;
-                    searchBtn.textContent = '🔍 بدء البحث';
-                    isSearching = false;
-                    return;
-                }
-
-                const fullPhone = `+${code}${phone}`;
-                const phoneNoPlus = `${code}${phone}`;
-
-                // بناء الروابط
-                const links = [
-                    { name: 'Truecaller', icon: '📞', color: '#1a73e8', url: `https://www.truecaller.com/search/${encodeURIComponent(fullPhone)}`, type: 'truecaller' },
-                    { name: 'Google', icon: '🔍', color: '#4285F4', url: `https://www.google.com/search?q=${encodeURIComponent('"' + fullPhone + '"')}`, type: 'google' },
-                    { name: 'واتساب', icon: '💬', color: '#25D366', url: `https://wa.me/${phoneNoPlus}` },
-                    { name: 'تيليجرام', icon: '✈️', color: '#0088cc', url: `tg://resolve?phone=${fullPhone}` },
-                    { name: 'فيسبوك', icon: '📘', color: '#1877F2', url: `https://www.facebook.com/search/top/?q=${encodeURIComponent(fullPhone)}` },
-                    { name: 'انستغرام', icon: '📷', color: '#E4405F', url: `https://www.instagram.com/explore/search/?q=${encodeURIComponent(fullPhone)}` },
-                    { name: 'تويتر', icon: '🐦', color: '#1DA1F2', url: `https://twitter.com/search?q=${encodeURIComponent(fullPhone)}` },
-                    { name: 'تيك توك', icon: '🎵', color: '#000000', url: `https://www.tiktok.com/search?q=${encodeURIComponent(fullPhone)}` },
-                    { name: 'يوتيوب', icon: '▶️', color: '#FF0000', url: `https://www.youtube.com/results?search_query=${encodeURIComponent(fullPhone)}` },
-                    { name: 'لينكد إن', icon: '💼', color: '#0A66C2', url: `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(fullPhone)}` },
-                    { name: 'سناب شات', icon: '👻', color: '#FFFC00', url: `https://www.snapchat.com/add/${phoneNoPlus}` }
-                ];
-
-                // بناء HTML النتائج
-                let html = `
-                <div class="result-header">
-                    <span>🎯 نتيجة البحث عن الرقم:</span>
-                    <span class="query-display">${fullPhone}</span>
-                </div>`;
-
-                // Truecaller card
-                html += `
-                <a href="${links[0].url}" target="_blank" class="truecaller-card" rel="noopener">
-                    <div class="tc-icon">📞</div>
-                    <div class="tc-info">
-                        <div class="tc-label">Truecaller</div>
-                        <div class="tc-name">البحث عن الرقم في Truecaller</div>
-                        <div class="tc-detail">فتح في نافذة جديدة</div>
-                    </div>
-                    <div class="tc-arrow">🔗</div>
-                </a>`;
-
-                // Google card
-                html += `
-                <a href="${links[1].url}" target="_blank" class="google-card" rel="noopener">
-                    <div class="google-icon">🔍</div>
-                    <div class="google-info">
-                        <div class="google-label">Google • بحث متقدم</div>
-                        <div class="google-title">البحث عن الرقم في Google</div>
-                        <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
-                    </div>
-                    <div class="google-arrow">🌐</div>
-                </a>`;
-
-                // باقي المنصات
-                for(let i = 2; i < links.length; i++) {
-                    const app = links[i];
-                    html += `
-                    <div class="app-card clickable" onclick="window.open('${app.url}', '_blank')">
-                        <div class="app-icon" style="background:${app.color}22; color:${app.color};">${app.icon}</div>
-                        <div class="app-info">
-                            <div class="app-name">${app.name}</div>
-                            <div class="app-detail">رابط مباشر</div>
-                        </div>
-                        <div class="status-dot status-active" title="نشط"></div>
-                        <div class="risk-badge risk-low">رابط</div>
-                    </div>`;
-                }
-
-                html += `
-                <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
-                    🔒 روابط مباشرة | مبرمج منصور
-                </div>`;
-
-                resultsEl.innerHTML = html;
+                const rawPhone = query.replace(/\s/g, '');
+                displayPhoneResults(data, rawPhone);
                 resultsEl.classList.add('active');
                 resetBtn.style.display = 'block';
-
-                const finalLine = document.createElement('div');
-                finalLine.classList.add('line', 'success');
-                finalLine.textContent = '[✓] تم إنشاء ' + links.length + ' رابط مباشر.';
-                consoleEl.appendChild(finalLine);
-                consoleEl.scrollTop = consoleEl.scrollHeight;
-
                 searchBtn.disabled = false;
                 searchBtn.textContent = '🔍 بدء البحث';
                 isSearching = false;
-
+                await fetchFailedApps(data, consoleEl);
             } else {
-                // معالجة اسم المستخدم كما هي بدون تغيير
                 const data = generateUsernameResults(query);
                 displayUsernameResults(data);
                 resultsEl.classList.add('active');
@@ -1035,9 +935,102 @@
             }
         }
 
+        function displayPhoneResults(data, rawPhone) {
+            const resultsEl = document.getElementById('results');
+            const cleanForUrl = rawPhone.replace(/[^0-9+]/g, '');
+            const truecallerUrl = `https://www.truecaller.com/search/${encodeURIComponent(cleanForUrl)}`;
+            const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
+
+            // روابط المواقع الجديدة
+            const callerVercelUrl = `https://caller-uegx.vercel.app/?phone=${encodeURIComponent(cleanForUrl)}`;
+            const revealerUrl = `https://revealer.us/search?phone=${encodeURIComponent(cleanForUrl)}`; // افتراضي، قد تحتاج تعديل الرابط
+            const maamUrl = `https://maam.site/?phone=${encodeURIComponent(cleanForUrl)}`;
+
+            let html = `
+            <div class="result-header">
+                <span>🎯 نتيجة البحث عن الرقم:</span>
+                <span class="query-display">${rawPhone}</span>
+            </div>
+            <a href="${truecallerUrl}" target="_blank" class="truecaller-card" rel="noopener">
+                <div class="tc-icon">📞</div>
+                <div class="tc-info">
+                    <div class="tc-label">Truecaller</div>
+                    <div class="tc-name">البحث عن الرقم في Truecaller</div>
+                    <div class="tc-detail">فتح في نافذة جديدة</div>
+                </div>
+                <div class="tc-arrow">🔗</div>
+            </a>
+            <a href="${googleSearchUrl}" target="_blank" class="google-card" rel="noopener">
+                <div class="google-icon">🔍</div>
+                <div class="google-info">
+                    <div class="google-label">Google • بحث متقدم</div>
+                    <div class="google-title">البحث عن الرقم في Google</div>
+                    <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
+                </div>
+                <div class="google-arrow">🌐</div>
+            </a>
+            <!-- المواقع الإضافية الجديدة -->
+            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">📱</div>
+                <div class="ext-info">
+                    <div class="ext-label">Caller Vercel</div>
+                    <div class="ext-title">بحث عن الرقم في Caller</div>
+                    <div class="ext-detail">خدمة كشف هوية المتصل</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🕵️</div>
+                <div class="ext-info">
+                    <div class="ext-label">Revealer</div>
+                    <div class="ext-title">البحث في Revealer.us</div>
+                    <div class="ext-detail">منصة متقدمة للبحث عن الأرقام</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🌐</div>
+                <div class="ext-info">
+                    <div class="ext-label">Maam.site</div>
+                    <div class="ext-title">البحث في Maam</div>
+                    <div class="ext-detail">خدمة استعلام عن الأرقام</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <div class="app-card clickable" onclick="window.open('https://wa.me/${cleanForUrl.replace('+','')}', '_blank')">
+                <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
+                <div class="app-info">
+                    <div class="app-name">واتساب</div>
+                    <div class="app-detail">محادثة مشفرة</div>
+                </div>
+                <div class="status-dot status-active" title="نشط"></div>
+                <div class="risk-badge risk-low">خطر منخفض</div>
+            </div>
+            <div class="app-card clickable" onclick="window.open('tg://resolve?phone=${cleanForUrl}', '_blank')">
+                <div class="app-icon" style="background:#0088cc22; color:#0088cc;">✈️</div>
+                <div class="app-info">
+                    <div class="app-name">تيليجرام</div>
+                    <div class="app-detail">قناة مشفرة</div>
+                </div>
+                <div class="status-dot status-active" title="نشط"></div>
+                <div class="risk-badge risk-medium">خطر متوسط</div>
+            </div>
+            <div id="failedAppsContainer"></div>
+            <div style="text-align:center;margin-top:18px;color:#555;font-size:12px;letter-spacing:1px;">
+                🔒 بيانات وهمية للأغراض التعليمية | مبرمج منصور
+            </div>
+          `;
+            resultsEl.innerHTML = html;
+        }
+
         function displayUsernameResults(data) {
             const resultsEl = document.getElementById('results');
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(data.username)}`;
+
+            // إضافة المواقع الجديدة لليوزر (اختياري، مع روابط عامة)
+            const callerVercelUrl = `https://caller-uegx.vercel.app/`;
+            const revealerUrl = `https://revealer.us/`;
+            const maamUrl = `https://maam.site/`;
 
             let html = `
             <div class="result-header">
@@ -1052,6 +1045,34 @@
                     <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
                 </div>
                 <div class="google-arrow">🌐</div>
+            </a>
+            <!-- مواقع خارجية (عامة لليوزر) -->
+            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">📱</div>
+                <div class="ext-info">
+                    <div class="ext-label">Caller Vercel</div>
+                    <div class="ext-title">موقع Caller (بحث عام)</div>
+                    <div class="ext-detail">يمكن استخدامه للبحث اليدوي</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🕵️</div>
+                <div class="ext-info">
+                    <div class="ext-label">Revealer</div>
+                    <div class="ext-title">موقع Revealer.us</div>
+                    <div class="ext-detail">منصة متقدمة (تسجيل دخول)</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🌐</div>
+                <div class="ext-info">
+                    <div class="ext-label">Maam.site</div>
+                    <div class="ext-title">موقع Maam</div>
+                    <div class="ext-detail">خدمة استعلام عامة</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
             </a>
           `;
 
@@ -1077,6 +1098,65 @@
             </div>
           `;
             resultsEl.innerHTML = html;
+        }
+
+        async function fetchFailedApps(data, consoleEl) {
+            const container = document.getElementById('failedAppsContainer');
+            if (!container || !data.failedApps) return;
+
+            const appsToTry = data.failedApps;
+            const startMsg = document.createElement('div');
+            startMsg.classList.add('line', 'processing');
+            startMsg.textContent = '[~] بدء محاولات جلب التطبيقات الإضافية...';
+            consoleEl.appendChild(startMsg);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+            await sleep(600);
+
+            let failCount = 0;
+            for (let i = 0; i < appsToTry.length; i++) {
+                const app = appsToTry[i];
+                const preErrors = [
+                    { text: `[~] محاولة جلب ${app.name}...`, type: 'processing' },
+                    { text: `[×] خطأ: تعذر حل DNS لخادم ${app.name}`, type: 'error' },
+                    { text: `[!] تحذير: شهادة SSL غير صالحة لـ ${app.name}`, type: 'warning' },
+                    { text: `[×] خطأ: تم رفض الاتصال من قبل ${app.name} (خطأ 403)`, type: 'error' },
+                ];
+                for (const log of preErrors) {
+                    await sleep(300 + Math.random() * 400);
+                    const lineDiv = document.createElement('div');
+                    lineDiv.classList.add('line', log.type);
+                    lineDiv.textContent = log.text;
+                    consoleEl.appendChild(lineDiv);
+                    consoleEl.scrollTop = consoleEl.scrollHeight;
+                }
+                const failMsg = document.createElement('div');
+                failMsg.classList.add('line', 'error');
+                failMsg.textContent = `[×] فشل نهائي في جلب ${app.name} — تم التخطي`;
+                consoleEl.appendChild(failMsg);
+                consoleEl.scrollTop = consoleEl.scrollHeight;
+                failCount++;
+                await sleep(200);
+
+                const card = document.createElement('div');
+                card.className = 'app-card error-card';
+                card.style.animation = `fadeInUp 0.4s ease ${failCount * 0.08}s both`;
+                card.innerHTML = `
+                    <div class="app-icon" style="background:${app.color}22; color:${app.color}; opacity:0.5;">${app.icon}</div>
+                    <div class="app-info">
+                      <div class="app-name">${app.name} <span style="color:#ff5252;">(فشل الجلب)</span></div>
+                      <div class="app-detail" style="color:#ff5252;">تعذر الوصول إلى البيانات</div>
+                    </div>
+                    <div class="status-dot status-error" title="فشل"></div>
+                    <div class="risk-badge risk-high">خطأ</div>
+                `;
+                container.appendChild(card);
+                await sleep(200);
+            }
+            const finalMsg = document.createElement('div');
+            finalMsg.classList.add('line', 'error');
+            finalMsg.textContent = `[×] جميع محاولات الجلب فشلت (${failCount} فشل). التطبيقات مخفية أو محمية.`;
+            consoleEl.appendChild(finalMsg);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
         function resetSearch() {
