@@ -190,7 +190,7 @@
             position: relative;
             z-index: 1;
             width: 100%;
-            max-width: 780px; /* زيادة للابتوب */
+            max-width: 780px;
             margin: 0 auto;
         }
 
@@ -214,7 +214,7 @@
             }
         }
         .header h1 {
-            font-size: 34px; /* أكبر قليلاً */
+            font-size: 34px;
             font-weight: bold;
             letter-spacing: 4px;
             color: #fff;
@@ -233,7 +233,7 @@
             border: 1px solid rgba(255, 0, 0, 0.3);
             padding: 10px 30px;
             border-radius: 30px;
-            font-size: 22px; /* كان 15px */
+            font-size: 22px;
             font-weight: bold;
             color: var(--red);
             letter-spacing: 3px;
@@ -881,16 +881,10 @@
             if (lockInput.value.trim() === LOCK_CODE) {
                 lockScreen.classList.add('hidden');
                 mainContent.style.display = 'block';
-                // تأخير بسيط لإعادة تفعيل الجسيمات
                 setTimeout(() => {
                     document.body.style.opacity = '1';
                 }, 100);
-                // بدء الجسيمات
                 createParticles();
-                // تشغيل الدوال الأصلية
-                window.addEventListener('load', function() {
-                    document.body.style.opacity = '1';
-                });
             } else {
                 lockError.classList.add('show');
                 lockInput.value = '';
@@ -901,7 +895,6 @@
             }
         }
 
-        // السماح بالدخول بالضغط على Enter من حقل القفل
         lockInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -909,7 +902,7 @@
             }
         });
 
-        // ============== باقي الكود الأصلي ==============
+        // ============== دوال OSINT الأصلية ==============
         (function createParticles() {
             const container = document.getElementById('particles');
             if (!container) return;
@@ -1094,6 +1087,11 @@
             const truecallerUrl = `https://www.truecaller.com/search/${encodeURIComponent(cleanForUrl)}`;
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent('"' + rawPhone + '"')}`;
 
+            // روابط المواقع الجديدة الثلاثة
+            const callerVercelUrl = `https://caller-uegx.vercel.app/?phone=${encodeURIComponent(cleanForUrl)}`;
+            const revealerUrl = `https://revealer.us/search?phone=${encodeURIComponent(cleanForUrl)}`;
+            const maamUrl = `https://maam.site/?phone=${encodeURIComponent(cleanForUrl)}`;
+
             let html = `
             <div class="result-header">
                 <span>🎯 نتيجة البحث عن الرقم:</span>
@@ -1116,6 +1114,34 @@
                     <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
                 </div>
                 <div class="google-arrow">🌐</div>
+            </a>
+            <!-- المواقع الإضافية -->
+            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">📱</div>
+                <div class="ext-info">
+                    <div class="ext-label">Caller Vercel</div>
+                    <div class="ext-title">بحث عن الرقم في Caller</div>
+                    <div class="ext-detail">خدمة كشف هوية المتصل</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🕵️</div>
+                <div class="ext-info">
+                    <div class="ext-label">Revealer</div>
+                    <div class="ext-title">البحث في Revealer.us</div>
+                    <div class="ext-detail">منصة متقدمة للبحث عن الأرقام</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🌐</div>
+                <div class="ext-info">
+                    <div class="ext-label">Maam.site</div>
+                    <div class="ext-title">البحث في Maam</div>
+                    <div class="ext-detail">خدمة استعلام عن الأرقام</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
             </a>
             <div class="app-card clickable" onclick="window.open('https://wa.me/${cleanForUrl.replace('+','')}', '_blank')">
                 <div class="app-icon" style="background:#25D36622; color:#25D366;">💬</div>
@@ -1147,6 +1173,11 @@
             const resultsEl = document.getElementById('results');
             const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(data.username)}`;
 
+            // روابط عامة للمواقع (عند البحث عن يوزر)
+            const callerVercelUrl = `https://caller-uegx.vercel.app/`;
+            const revealerUrl = `https://revealer.us/`;
+            const maamUrl = `https://maam.site/`;
+
             let html = `
             <div class="result-header">
                 <span>🔍 نتيجة البحث عن المستخدم:</span>
@@ -1160,6 +1191,34 @@
                     <div class="google-detail">البحث عن حسابات مرتبطة، إعلانات، صفحات</div>
                 </div>
                 <div class="google-arrow">🌐</div>
+            </a>
+            <!-- مواقع خارجية (عامة) -->
+            <a href="${callerVercelUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">📱</div>
+                <div class="ext-info">
+                    <div class="ext-label">Caller Vercel</div>
+                    <div class="ext-title">موقع Caller (بحث عام)</div>
+                    <div class="ext-detail">يمكن استخدامه للبحث اليدوي</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${revealerUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🕵️</div>
+                <div class="ext-info">
+                    <div class="ext-label">Revealer</div>
+                    <div class="ext-title">موقع Revealer.us</div>
+                    <div class="ext-detail">منصة متقدمة (تسجيل دخول)</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
+            </a>
+            <a href="${maamUrl}" target="_blank" class="ext-card" rel="noopener">
+                <div class="ext-icon">🌐</div>
+                <div class="ext-info">
+                    <div class="ext-label">Maam.site</div>
+                    <div class="ext-title">موقع Maam</div>
+                    <div class="ext-detail">خدمة استعلام عامة</div>
+                </div>
+                <div class="ext-arrow">🔗</div>
             </a>
           `;
 
